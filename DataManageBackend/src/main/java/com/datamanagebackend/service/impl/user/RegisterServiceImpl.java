@@ -68,7 +68,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
 
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(null, username, encodedPassword); // 默认头像
+        User user = new User(null, username, encodedPassword);
         userMapper.insert(user);
 
         map.put("error_message", "success");

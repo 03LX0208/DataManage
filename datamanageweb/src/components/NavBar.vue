@@ -3,7 +3,7 @@
     <div class="container-fluid align-items-center">
       <router-link :to="{name: 'home'}" class="navbar-brand white-font d-flex" style="margin-left: 40vh; margin-right: 60vh; font-size: 18px; font-family: sans-serif; font-weight: bold;">
         <img src="../assets/images/logo.png" alt="Logo" width="32" height="32" class="d-inline-block" style="margin-right: 10px">
-        野鸡大学管理系统
+        野鸡大学教务管理系统
       </router-link>
       <form class="d-flex" role="search" style="height: 30px;" v-if="$store.state.user.is_login">
         <input class="form-control me-lg-auto" style="background-color: rgb(204,224,244)" type="search" placeholder="请输入关键字" aria-label="Search">

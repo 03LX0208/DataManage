@@ -90,6 +90,7 @@
 <script>
 import NavBar from "@/components/NavBar"
 import {NCard, NList, NListItem, NThing} from 'naive-ui';
+import $ from 'jquery'
 
 export default {
   components: {
@@ -98,6 +99,20 @@ export default {
     NList,
     NListItem,
     NThing,
+  },
+  setup() {
+    $.ajax({
+      url: "http://localhost:4080/test/",
+      type: "get",
+      data: {
+        id: 3,
+        name: "王成宇",
+        sex: "woman",
+      },
+      success(resp) {
+        console.log(resp)
+      },
+    });
   }
 }
 </script>

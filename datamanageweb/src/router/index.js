@@ -3,6 +3,7 @@ import Home from '../views/HomeView.vue'
 import Login from '../views/LoginView.vue'
 import Register from '../views/RegisterView'
 import NotFound from "@/components/error_page/NotFound";
+import TimeTable from "@/views/StudentViews/TimeTableView";
 
 const routes = [
   {
@@ -26,6 +27,11 @@ const routes = [
     component: NotFound
   },
   {
+    path: '/student/time-table/',
+    name: 'time-table',
+    component: TimeTable
+  },
+  {
     path: "/:catchAll(.*)",
     redirect: "/404",
   },
@@ -41,7 +47,7 @@ import store from '@/store/index'
 router.beforeEach((to, from, next) => {
   // 持久化登录 权限管理
   const jwt_token = localStorage.getItem("jwt_token");
-  if (jwt_token !== null && jwt_token !== "") {
+  if (jwt_token !== "") {
     store.commit("updateToken", jwt_token);
     store.dispatch("getInfo", {
       success() {

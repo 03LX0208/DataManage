@@ -68,10 +68,10 @@ export default {
     let confirmPassword = ref('');  // 确认密码
     const message = useMessage(); // 弹窗信息
 
-    // 登录事件
+    // 注册事件
     const register = () => {
       $.ajax({
-        url: "https://data.lxcode.xyz/api/user/register/",
+        url: "http://localhost:4080/api/user/register/",
         type: "post",
         data: {
           username: username.value,
@@ -89,7 +89,7 @@ export default {
               });
             }, 2000);
           } else {  // 错误 提示用户信息
-            message.error(resp.error_message, );
+            message.error(resp.error_message);
           }
         }
       })
