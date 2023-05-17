@@ -21,7 +21,7 @@ public class RegisterServiceImpl implements RegisterService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Map<String, String> register(String username, String password, String confirmedPassword) {
+    public Map<String, String> register(String username, String password, String confirmedPassword, String identity) {
         Map<String, String> map = new HashMap<>();
         if (username == null) {
             map.put("error_message", "教学号不能为空");
@@ -68,7 +68,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
 
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(null, username, encodedPassword);
+        User user = new User(null, username, encodedPassword, identity);
         userMapper.insert(user);
 
         map.put("error_message", "success");

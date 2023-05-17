@@ -5,6 +5,7 @@ export default {
         id: "",
         username: "",
         token: "",
+        identity: "",
         is_login: false,
     },
     getters: {
@@ -15,6 +16,7 @@ export default {
             state.id = user.id;
             state.username = user.username;
             state.is_login = user.is_login;
+            state.identity = user.identity;
         },
         updateToken(state, token) {
             state.token = token;
@@ -30,7 +32,7 @@ export default {
     actions: {
         login(context, data) {
             $.ajax({
-                url: "http://localhost:4080/api/user/token/",
+                url: "https://data.lxcode.xyz/api/user/token/",
                 type: "post",
                 data: {
                     username: data.username,
@@ -50,7 +52,7 @@ export default {
         },
         getInfo(context, data) {
             $.ajax({
-                url: "http://localhost:4080/api/user/info/",
+                url: "https://data.lxcode.xyz/api/user/info/",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + context.state.token,

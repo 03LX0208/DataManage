@@ -1,7 +1,7 @@
 <template>
   <div id="all">
     <NavBar/>
-    <div class="container">
+    <div class="container" v-if="$store.state.user.identity === 'student'">
       <div class="row">
         <div class="col"></div>
 
@@ -84,13 +84,58 @@
         <div class="col"></div>
       </div>
     </div>
+
+    <div class="container" v-if="$store.state.user.identity === 'admin'">
+      <div class="row">
+        <div class="col-12">
+          <n-card content-style="padding: 0;">
+            <n-tabs
+                type="line"
+                size="large"
+                :tabs-padding="20"
+                pane-style="padding: 20px;"
+            >
+              <n-tab-pane name="用户管理">
+                <n-data-table
+                    :columns="usersColumns"
+                    :data="allUsers"
+                    :pagination="false"
+                    :bordered="false"
+                    :single-line="false"
+                    style="font-size: 15px;"
+                />
+              </n-tab-pane>
+              <n-tab-pane name="别的">
+
+              </n-tab-pane>
+            </n-tabs>
+          </n-card>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import NavBar from "@/components/NavBar"
-import {NCard, NList, NListItem, NThing} from 'naive-ui';
+import {NCard, NList, NListItem, NThing,  NTabs, NTabPane, NDataTable} from 'naive-ui';
 import $ from 'jquery'
+import {useStore} from "vuex";
+import {ref} from 'vue';
+
+const createUsersColumns = () => {
+  return [
+    {
+      title: "教学号",
+      key: "username"
+    },
+    {
+      title: "身份",
+      key: "identity",
+    },
+  ];
+};
+
 
 export default {
   components: {
@@ -99,20 +144,34 @@ export default {
     NList,
     NListItem,
     NThing,
+    NTabs,
+    NTabPane,
+    NDataTable,
   },
   setup() {
-    $.ajax({
-      url: "http://localhost:4080/test/",
-      type: "get",
-      data: {
-        id: 3,
-        name: "王成宇",
-        sex: "woman",
-      },
-      success(resp) {
-        console.log(resp)
-      },
-    });
+    const store = useStore();
+    let allUsers = ref([]);
+
+    if (store.state.user.identity === "admin") {
+      // 获得管理员掌握的所有用户
+      $.ajax({
+        url: "https://data.lxcode.xyz/api/admin/get-all-user/",
+        type: "get",
+        headers: {
+          Authorization: "Bearer " + store.state.user.token,
+        },
+        success(resp) {
+          allUsers.value = resp;
+        }
+      });
+    }
+
+    return {
+      allUsers,
+      usersColumns: createUsersColumns({
+
+      }),
+    }
   }
 }
 </script>

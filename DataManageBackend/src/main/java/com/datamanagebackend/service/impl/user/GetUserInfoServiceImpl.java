@@ -23,6 +23,7 @@ public class GetUserInfoServiceImpl implements GetUserInfoService {
         map.put("error_message", "success");
         map.put("id", user.getId().toString());
         map.put("username", user.getUsername());
+        map.put("identity", user.getIdentity());
         return map;
     }
 }
