@@ -32,7 +32,7 @@ export default {
     actions: {
         login(context, data) {
             $.ajax({
-                url: "https://data.lxcode.xyz/api/user/token/",
+                url: "http://localhost:4080/api/user/token/",
                 type: "post",
                 data: {
                     username: data.username,
@@ -52,7 +52,7 @@ export default {
         },
         getInfo(context, data) {
             $.ajax({
-                url: "https://data.lxcode.xyz/api/user/info/",
+                url: "http://localhost:4080/api/user/info/",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + context.state.token,

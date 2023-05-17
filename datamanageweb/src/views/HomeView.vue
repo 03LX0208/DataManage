@@ -88,7 +88,7 @@
     <div class="container" v-if="$store.state.user.identity === 'admin'">
       <div class="row">
         <div class="col-12">
-          <n-card content-style="padding: 0;">
+          <n-card content-style="" style="margin-top: 20px;">
             <n-tabs
                 type="line"
                 size="large"
@@ -118,12 +118,14 @@
 
 <script>
 import NavBar from "@/components/NavBar"
-import {NCard, NList, NListItem, NThing,  NTabs, NTabPane, NDataTable} from 'naive-ui';
+import {NCard, NList, NListItem, NThing,  NTabs, NTabPane, NDataTable, NButton, } from 'naive-ui';
 import $ from 'jquery'
 import {useStore} from "vuex";
-import {ref} from 'vue';
+import {ref, h} from 'vue';
 
-const createUsersColumns = () => {
+const createUsersColumns = ({
+    updateUser, deleteUser
+                            }) => {
   return [
     {
       title: "教学号",
@@ -132,6 +134,41 @@ const createUsersColumns = () => {
     {
       title: "身份",
       key: "identity",
+    },
+    {
+      title: "操作",
+      render(row) {
+        const buttons = [
+          {
+            text: "修改用户信息",
+            color: "info",
+            onClick: () => updateUser(row)
+          },
+          {
+            text: "删除用户",
+            color: "error",
+            onClick: () => deleteUser(row)
+          }
+        ];
+
+        return h(
+            "div",
+            {},
+            buttons.map(({ text, color, onClick }, index) =>
+                h(
+                    NButton,
+                    {
+                      strong: true,
+                      type: color,
+                      size: "small",
+                      onClick,
+                      key: index
+                    },
+                    { default: () => text }
+                )
+            )
+        );
+      }
     },
   ];
 };
@@ -153,9 +190,9 @@ export default {
     let allUsers = ref([]);
 
     if (store.state.user.identity === "admin") {
-      // 获得管理员掌握的所有用户
+      // 获得管理员的管理的所有用户
       $.ajax({
-        url: "https://data.lxcode.xyz/api/admin/get-all-user/",
+        url: "http://localhost:4080/api/admin/get-all-user/",
         type: "get",
         headers: {
           Authorization: "Bearer " + store.state.user.token,
@@ -169,7 +206,12 @@ export default {
     return {
       allUsers,
       usersColumns: createUsersColumns({
-
+        updateUser(row) {
+          alert("还没写" + row.id);
+        },
+        deleteUser(row) {
+          alert("还没写哈" + row.id);
+        },
       }),
     }
   }

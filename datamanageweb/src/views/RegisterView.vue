@@ -71,7 +71,7 @@ export default {
     // 注册事件
     const register = () => {
       $.ajax({
-        url: "https://data.lxcode.xyz/api/user/register/",
+        url: "http://localhost:4080/api/user/register/",
         type: "post",
         data: {
           username: username.value,
