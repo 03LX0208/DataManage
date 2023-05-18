@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Student {
-    private String studentId;
+    private Integer studentId;
     private String studentName;
     private String studentGender;
+    private String studentEnterDate;
+    private Integer studentAge;
+    private String studentTelephone;
+    private Integer facultyId;      //  属于哪个学院..
 }

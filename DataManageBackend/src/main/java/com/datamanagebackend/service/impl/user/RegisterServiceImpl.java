@@ -23,7 +23,7 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public Map<String, String> register(String username, String password, String confirmedPassword, String identity) {
         Map<String, String> map = new HashMap<>();
-        if (username == null) {
+        if (username == null || username.trim().length() == 0) {
             map.put("error_message", "教学号不能为空");
             return map;
         }
@@ -39,13 +39,20 @@ public class RegisterServiceImpl implements RegisterService {
             return map;
         }
 
+        for (int i = 0; i < username.length(); i++) {
+            if (!(username.charAt(i) >= '0' && username.charAt(i) <= '9')) {
+                map.put("error_message", "教学号只能包含数字！");
+                return map;
+            }
+        }
+
         if (password.length() == 0 || confirmedPassword.length() == 0) {
             map.put("error_message", "密码不能为空");
             return map;
         }
 
-        if (username.length() > 100) {
-            map.put("error_message", "教学号长度不能超过100");
+        if (username.length() > 20) {
+            map.put("error_message", "教学号长度不能超过20");
             return map;
         }
 
@@ -68,7 +75,7 @@ public class RegisterServiceImpl implements RegisterService {
         }
 
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(null, username, encodedPassword, identity);
+        User user = new User(null, username, encodedPassword, identity, Integer.parseInt(username));
         userMapper.insert(user);
 
         map.put("error_message", "success");
