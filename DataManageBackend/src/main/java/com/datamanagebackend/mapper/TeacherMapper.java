@@ -5,6 +5,7 @@ import com.datamanagebackend.pojo.Teacher;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface TeacherMapper extends BaseMapper<Teacher> {
@@ -16,4 +17,7 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     void insertTeacher(@Param("teacher_id") Integer teacher_id, @Param("teacher_name") String teacher_name,
                        @Param("teacher_gender") String teacher_gender, @Param("teacher_age") Integer teacher_age,
                        @Param("teacher_telephone") String teacher_telephone);
+
+    @Select("SELECT * FROM teacher WHERE teacher_id = #{teacher_id}")
+    Teacher selectTeacherByTeacherId(@Param("teacher_id") Integer teacher_id);
 }

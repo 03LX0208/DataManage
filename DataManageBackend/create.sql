@@ -98,7 +98,7 @@ create table teacher
     teacher_id        int                     not null
         primary key,
     teacher_name      varchar(20)             not null,
-    teacher_gender    enum ('male', 'famale') not null,
+    teacher_gender    enum ('male', 'female') not null,
     teacher_age       int                     not null,
     teacher_telephone varchar(20)             not null,
     constraint teacher__fk
