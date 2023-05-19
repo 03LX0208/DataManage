@@ -1,6 +1,7 @@
 package com.datamanagebackend.service.impl.user;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.datamanagebackend.mapper.AdminMapper;
 import com.datamanagebackend.mapper.UserMapper;
 import com.datamanagebackend.pojo.User;
 import com.datamanagebackend.service.user.RegisterService;
@@ -16,6 +17,9 @@ import java.util.Map;
 public class RegisterServiceImpl implements RegisterService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private AdminMapper adminMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -77,6 +81,7 @@ public class RegisterServiceImpl implements RegisterService {
         String encodedPassword = passwordEncoder.encode(password);
         User user = new User(null, username, encodedPassword, identity, Integer.parseInt(username));
         userMapper.insert(user);
+        adminMapper.insertAdmin(Integer.parseInt(username), "管理员普の", "male", 18, "110");
 
         map.put("error_message", "success");
         return map;

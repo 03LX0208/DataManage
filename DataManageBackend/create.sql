@@ -73,6 +73,21 @@ create table user
         unique (username)
 );
 
+create table admin
+(
+    admin_id        int                     not null
+        primary key,
+    admin_name      varchar(20)             not null,
+    admin_gender    enum ('male', 'female') not null,
+    admin_age       int                     not null,
+    admin_telephone varchar(20)             not null,
+    constraint admin_admin_id_uindex
+        unique (admin_id),
+    constraint admin_user_int_username_fk
+        foreign key (admin_id) references user (int_username)
+            on update cascade
+);
+
 create table student
 (
     student_id         int                     not null

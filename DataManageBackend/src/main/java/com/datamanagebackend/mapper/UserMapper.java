@@ -22,4 +22,10 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("SELECT * FROM user WHERE int_username = #{int_username}")
     User selectUserByIntUsername(@Param("int_username") Integer int_username);
+
+    @Select("SELECT * FROM user")
+    List<User> selectAllUsers();
+
+    @Delete("DELETE FROM user WHERE int_username = #{int_username}")
+    void deleteUserByIntUsername(@Param("int_username") Integer int_username);
 }

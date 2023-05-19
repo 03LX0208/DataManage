@@ -7,6 +7,7 @@ export default {
         token: "",
         identity: "",
         is_login: false,
+        name: "",
     },
     getters: {
 
@@ -17,6 +18,7 @@ export default {
             state.username = user.username;
             state.is_login = user.is_login;
             state.identity = user.identity;
+            state.name = user.name;
         },
         updateToken(state, token) {
             state.token = token;
@@ -26,6 +28,7 @@ export default {
             state.username = "";
             state.token = "";
             state.is_login = false;
+            state.name = "";
             localStorage.setItem("jwt_token", state.token);
         },
     },

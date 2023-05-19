@@ -12,7 +12,7 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle white-font" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="../assets/images/user.png" alt="Logo" width="26" height="26" style="margin-right: 3px">
-            赵泽普
+            {{ $store.state.user.name }}
           </a>
           <ul class="dropdown-menu">
             <li><router-link :to="{name: '404'}" class="dropdown-item">个人中心</router-link></li>

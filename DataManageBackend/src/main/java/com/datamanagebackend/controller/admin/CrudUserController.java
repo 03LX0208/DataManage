@@ -2,10 +2,7 @@ package com.datamanagebackend.controller.admin;
 
 import com.datamanagebackend.service.admin.CrudUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -28,5 +25,10 @@ public class CrudUserController {
     @PostMapping("/update/")
     public Map<String, String> updateUser(@RequestParam Map<String, String> data) {
         return crudUserService.updateUserService(data);
+    }
+
+    @GetMapping("/info/")
+    public Map<String, String> getInfo(@RequestParam Map<String, String> data) {
+        return crudUserService.getInfoService(data);
     }
 }
