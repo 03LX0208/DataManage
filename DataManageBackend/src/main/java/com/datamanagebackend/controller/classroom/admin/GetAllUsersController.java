@@ -1,4 +1,4 @@
-package com.datamanagebackend.controller.admin;
+package com.datamanagebackend.controller.classroom.admin;
 
 import com.datamanagebackend.service.admin.GetAllUsersService;
 import org.springframework.beans.factory.annotation.Autowired;

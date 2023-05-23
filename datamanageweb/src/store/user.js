@@ -19,6 +19,9 @@ export default {
             state.is_login = user.is_login;
             state.identity = user.identity;
             state.name = user.name;
+            if (user.identity === 'student') state.name += " (学生)";
+            else if (user.identity === 'teacher') state.name += " (老师)";
+            else if (user.identity === 'admin') state.name += " (管理员)";
         },
         updateToken(state, token) {
             state.token = token;

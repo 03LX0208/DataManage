@@ -1,12 +1,12 @@
 <template>
   <n-data-table
-      striped
-      :columns="facultiesColumns"
-      :data="allFaculties"
+      :columns="classroomColumns"
+      :data="allClassroom"
       :pagination="paginationReactive"
       :bordered="false"
       :single-line="false"
       style="font-size: 15px;"
+      striped
   />
 </template>
 
@@ -23,40 +23,40 @@ export default {
   setup() {
     const store = useStore();
     const message = useMessage();
-    let allFaculties = ref([]);
+    let allClassroom = ref([]);
 
     $.ajax({
-      url: "https://data.lxcode.xyz/api/faculty/get-all/",
+      url: "https://data.lxcode.xyz/api/classroom/get-all/",
       type: "get",
       success(resp) {
-        allFaculties.value = resp;
+        allClassroom.value = resp;
       }
     });
 
-    const createFacultyColumns = ({
-                                    deleteFaculty
+    const createClassroomColumns = ({
+                                    deleteClassroom
                                   }) => {
       return [
         {
-          title: "学院编号",
-          key: "facultyId"
+          title: "教室编号",
+          key: "classroomId"
         },
         {
-          title: "学院名称",
-          key: "facultyName"
+          title: "教室名称",
+          key: "classroomName"
         },
         {
-          title: "学院地址",
-          key: "facultySite"
+          title: "教室地址",
+          key: "classroomSite"
         },
         {
           title: "操作",
           render(row) {
             const buttons = [
               {
-                text: "删除学院",
+                text: "删除教室",
                 color: "error",
-                onClick: () => deleteFaculty(row)
+                onClick: () => deleteClassroom(row)
               }
             ];
 
@@ -68,13 +68,13 @@ export default {
 
             const helper = (row) => {
               $.ajax({
-                url: "https://data.lxcode.xyz/api/faculty/delete/",
+                url: "https://data.lxcode.xyz/api/classroom/delete/",
                 type: "post",
                 headers: {
                   Authorization: "Bearer " + store.state.user.token,
                 },
                 data: {
-                  faculty_id: row.facultyId,
+                  classroom_id: row.classroomId,
                 },
                 success(resp) {
                   if (resp.error_message === "success") {
@@ -117,7 +117,7 @@ export default {
                                         { default: () => text }
                                     ),
                                 default: () =>
-                                    h("span", {}, "您确定要删除该学院吗？")
+                                    h("span", {}, "您确定要删除该教室吗？")
                               }
                           )
                       )
@@ -149,10 +149,9 @@ export default {
 
     return {
       paginationReactive,
-      allFaculties,
-      facultiesColumns: createFacultyColumns({
-        deleteFaculty() {
-        },
+      allClassroom,
+      classroomColumns: createClassroomColumns({
+        deleteClassroom() {}
       })
     }
   }

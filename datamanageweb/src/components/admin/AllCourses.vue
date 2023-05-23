@@ -23,40 +23,82 @@ export default {
   setup() {
     const store = useStore();
     const message = useMessage();
-    let allFaculties = ref([]);
+    let allCourses = ref([]);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/faculty/get-all/",
       type: "get",
-      success(resp) {
-        allFaculties.value = resp;
+      success(response) {
+        $.ajax({
+          url: "https://data.lxcode.xyz/api/course/get-all/",
+          type: "get",
+          success(resp) {
+            for (const course of resp) {
+              for (const faculty of response) {
+                if (Number(faculty.facultyId) === Number(course.facultyId)) {
+                  allCourses.value.push({
+                    courseId: course.courseId,
+                    courseName: course.courseName,
+                    coursePeriod: course.coursePeriod,
+                    courseCredit: course.courseCredit,
+                    courseFaculty: faculty.facultyName,
+                  });
+                  break;
+                }
+              }
+            }
+          }
+        });
       }
     });
 
     const createFacultyColumns = ({
-                                    deleteFaculty
+                                    deleteCourse, showCourseGraph
                                   }) => {
       return [
         {
-          title: "学院编号",
-          key: "facultyId"
+          title: "课程编号",
+          key: "courseId"
         },
         {
-          title: "学院名称",
-          key: "facultyName"
+          title: "课程名称",
+          key: "courseName"
         },
         {
-          title: "学院地址",
-          key: "facultySite"
+          title: "课程学时",
+          key: "coursePeriod"
+        },
+        {
+          title: "课程学分",
+          key: "courseCredit"
+        },
+        {
+          title: "开课学院",
+          key: "courseFaculty",
+        },
+        {
+          title: "先导课程",
+          render(row) {
+            return h(
+                NButton,
+                {
+                  strong: true,
+                  type: "info",
+                  size: "small",
+                  onClick: () => showCourseGraph(row)
+                },
+                { default: () => "查看" }
+            );
+          }
         },
         {
           title: "操作",
           render(row) {
             const buttons = [
               {
-                text: "删除学院",
+                text: "删除课程",
                 color: "error",
-                onClick: () => deleteFaculty(row)
+                onClick: () => deleteCourse(row)
               }
             ];
 
@@ -68,13 +110,13 @@ export default {
 
             const helper = (row) => {
               $.ajax({
-                url: "https://data.lxcode.xyz/api/faculty/delete/",
+                url: "https://data.lxcode.xyz/api/course/delete/",
                 type: "post",
                 headers: {
                   Authorization: "Bearer " + store.state.user.token,
                 },
                 data: {
-                  faculty_id: row.facultyId,
+                  course_id: row.courseId,
                 },
                 success(resp) {
                   if (resp.error_message === "success") {
@@ -117,7 +159,7 @@ export default {
                                         { default: () => text }
                                     ),
                                 default: () =>
-                                    h("span", {}, "您确定要删除该学院吗？")
+                                    h("span", {}, "您确定要删除该课程吗？")
                               }
                           )
                       )
@@ -149,10 +191,13 @@ export default {
 
     return {
       paginationReactive,
-      allFaculties,
+      allFaculties: allCourses,
       facultiesColumns: createFacultyColumns({
-        deleteFaculty() {
+        deleteCourse() {
         },
+        showCourseGraph(row) {
+          window.open(`/course/graph/${row.courseId}`, '_blank');
+        }
       })
     }
   }

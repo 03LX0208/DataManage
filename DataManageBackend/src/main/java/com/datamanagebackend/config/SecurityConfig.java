@@ -40,7 +40,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/user/token/",
                         "/api/user/register/",
                         "/api/test/",
-                        "/api/faculty/get-all/"
+                        "/api/faculty/get-all/",
+                        "/api/course/get-all/",
+                        "/api/course/graph/",
+                        "/api/classroom/get-all/"
                 ).permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();

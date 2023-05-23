@@ -8,7 +8,8 @@ import java.util.List;
 
 @Mapper
 public interface FacultyMapper extends BaseMapper<Faculty> {
-    @Insert("INSERT INTO " +
+    @Insert(
+    "INSERT INTO " +
     "faculty(faculty_id, faculty_name, faculty_site) " +
     "VALUES(#{faculty_id}, #{faculty_name}, #{faculty_site})")
     void insertFaculty(@Param("faculty_id") Integer faculty_id, @Param("faculty_name") String faculty_name,
@@ -23,7 +24,8 @@ public interface FacultyMapper extends BaseMapper<Faculty> {
     @Select("SELECT * FROM faculty WHERE faculty_id = #{faculty_id}")
     Faculty selectFacultyByFacultyId(@Param("faculty_id") Integer faculty_id);
 
-    @Update("UPDATE faculty " +
+    @Update(
+    "UPDATE faculty " +
     "SET faculty_name = #{faculty_name}, faculty_site = #{faculty_site} " +
     "WHERE faculty_id = #{faculty_id}")
     void updateFacultyByFacultyId(@Param("faculty_id") Integer faculty_id, @Param("faculty_name") String faculty_name,

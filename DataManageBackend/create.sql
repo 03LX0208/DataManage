@@ -2,7 +2,7 @@ create table classroom
 (
     classroom_id   int         not null
         primary key,
-    classroom_name int         not null,
+    classroom_name varchar(20) not null,
     classroom_site varchar(20) not null
 );
 
@@ -33,9 +33,9 @@ create table course
 (
     course_id     int         not null
         primary key,
-    class_name    varchar(20) not null,
-    class_lessons int         not null,
-    class_credit  int         not null,
+    course_name   varchar(20) not null,
+    course_period int         not null,
+    course_credit int         not null,
     faculty_id    int         not null,
     constraint course_faculties_faculties_id_fk
         foreign key (faculty_id) references faculty (faculty_id)
@@ -123,42 +123,22 @@ create table teacher
 
 create table section
 (
-    teacher_id   int          not null,
+    section_id   int auto_increment
+        primary key,
     course_id    int          not null,
-    section_id   int          not null,
+    teacher_id   int          not null,
     classroom_id int          not null,
-    section_time varchar(100) not null,
-    primary key (teacher_id, course_id, section_id),
-    constraint section_pk
-        unique (section_id, course_id),
-    constraint section___fk
-        foreign key (teacher_id) references teacher (teacher_id)
-            on update cascade,
+    section_time varchar(100) null,
+    constraint section_section_id_uindex
+        unique (section_id),
     constraint section_classroom_classroom_id_fk
-        foreign key (classroom_id) references classroom (classroom_id)
-            on update cascade,
+        foreign key (classroom_id) references classroom (classroom_id),
     constraint section_course_course_id_fk
-        foreign key (course_id) references course (course_id)
-            on update cascade
+        foreign key (course_id) references course (course_id),
+    constraint section_teacher_teacher_id_fk
+        foreign key (teacher_id) references teacher (teacher_id)
 );
 
-create table student_section
-(
-    student_id    int not null,
-    course_id     int not null,
-    section_id    int not null,
-    student_grade int null,
-    primary key (student_id, section_id, course_id),
-    constraint student_section_course_id_section_id_uindex
-        unique (course_id, section_id),
-    constraint student_id
-        foreign key (student_id) references student (student_id)
-            on update cascade,
-    constraint student_section_section_section_id_course_id_fk
-        foreign key (section_id, course_id) references section (section_id, course_id)
-            on update cascade
-);
+# appoint 和 stu_sec
 
-create index student_section_course_id_section_id_index
-    on student_section (course_id, section_id);
 

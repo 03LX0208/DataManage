@@ -1,8 +1,9 @@
 <template>
   <n-data-table
+      striped
       :columns="usersColumns"
       :data="allUsers"
-      :pagination="false"
+      :pagination="pagination"
       :bordered="false"
       :single-line="false"
       style="font-size: 15px;"
@@ -150,91 +151,10 @@
 </template>
 
 <script>
-import {NButton, NDataTable, NSpace, useMessage, NModal, NCard, NSelect, NInput } from "naive-ui";
+import {NButton, NDataTable, NSpace, useMessage, NModal, NCard, NSelect, NInput, NPopconfirm} from "naive-ui";
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import $ from "jquery";
-
-const createUsersColumns = ({
-                              updateUser, deleteUser
-                            }) => {
-  return [
-    {
-      title: "教学号",
-      key: "id"
-    },
-    {
-      title: "身份",
-      key: "identity",
-    },
-    {
-      title: "姓名",
-      key: "name",
-    },
-    {
-      title: "性别",
-      key: "gender",
-    },
-    {
-      title: "年龄",
-      key: "age",
-    },
-    {
-      title: "联系方式",
-      key: "telephone",
-    },
-    {
-      title: "入学日期",
-      key: "enter_date",
-    },
-    {
-      title: "学院",
-      key: "faculty",
-    },
-    {
-      title: "操作",
-      render(row) {
-        const buttons = [
-          {
-            text: "变更信息",
-            color: "info",
-            onClick: () => updateUser(row)
-          },
-          {
-            text: "删除用户",
-            color: "error",
-            onClick: () => deleteUser(row)
-          }
-        ];
-
-        return h(
-            "div",
-            {},
-            [
-              h(
-                  NSpace,
-                  { align: "center" },
-                  buttons.map(({ text, color, onClick }, index) =>
-                      h(
-                          NButton,
-                          {
-                            strong: true,
-                            type: color,
-                            size: "small",
-                            onClick,
-                            key: index,
-                          },
-                          { default: () => text }
-                      )
-                  )
-              ),
-            ]
-        );
-      }
-    },
-  ];
-};
-
 
 export default {
   components: {
@@ -467,7 +387,150 @@ export default {
       showAddUserModal.value = true;
     }
 
+    const createUsersColumns = ({
+                                  updateUser, deleteUser
+                                }) => {
+      return [
+        {
+          title: "教学号",
+          key: "id"
+        },
+        {
+          title: "身份",
+          key: "identity",
+        },
+        {
+          title: "姓名",
+          key: "name",
+        },
+        {
+          title: "性别",
+          key: "gender",
+        },
+        {
+          title: "年龄",
+          key: "age",
+        },
+        {
+          title: "联系方式",
+          key: "telephone",
+        },
+        {
+          title: "入学日期",
+          key: "enter_date",
+        },
+        {
+          title: "学院",
+          key: "faculty",
+        },
+        {
+          title: "操作",
+          render(row) {
+            const buttons = [
+              {
+                text: "变更信息",
+                color: "info",
+                onClick: () => updateUser(row)
+              },
+              {
+                text: "删除用户",
+                color: "error",
+                onClick: () => deleteUser(row)
+              }
+            ];
+
+            const handlePositiveClick = (row) => {
+              return () => {
+                helper(row);
+              }
+            }
+
+            const handleNegativeClick = () => {}
+
+            const helper = (row) => {
+              $.ajax({
+                url: "https://data.lxcode.xyz/api/admin/user/delete/",
+                type: "post",
+                headers: {
+                  Authorization: "Bearer " + store.state.user.token,
+                },
+                data: {
+                  id: row.id,
+                },
+                success(resp) {
+                  if (resp.error_message === "success") {
+                    message.success("删除成功！");
+                    let allUsersCopy = allUsers.value;
+                    allUsers.value = []
+                    for (const user of allUsersCopy) {
+                      if (Number(user.id) !== Number(row.id)) {
+                        allUsers.value.push(user);
+                      }
+                    }
+                  } else {
+                    message.error(resp.error_message);
+                  }
+                }
+              })
+            }
+
+            return h(
+                "div",
+                {},
+                [
+                  h(
+                      NSpace,
+                      { align: "center" },
+                      buttons.map(({ text, color, onClick }, index) =>
+                          h(
+                              NPopconfirm,
+                              {
+                                onPositiveClick: handlePositiveClick(row),
+                                onNegativeClick: handleNegativeClick,
+                                key: index
+                              },
+                              {
+                                trigger: () =>
+                                    h(
+                                        NButton,
+                                        {
+                                          strong: true,
+                                          type: color,
+                                          size: "small",
+                                          onClick,
+                                          key: index,
+                                        },
+                                        { default: () => text }
+                                    ),
+                                default: () =>
+                                    h("span", {}, "您确定要删除该用户吗？")
+                              }
+                          )
+                      )
+                  ),
+                ]
+            );
+          }
+        },
+      ];
+    };
+
+    const paginationReactive = reactive({
+      page: 2,
+      pageSize: 7,
+      showSizePicker: true,
+      pageSizes: [3, 5, 7, 9, 11],
+      onChange: (page) => {
+        paginationReactive.page = page;
+      },
+      onUpdatePageSize: (pageSize) => {
+        paginationReactive.pageSize = pageSize;
+        paginationReactive.page = 1;
+      }
+    });
+
     return {
+      pagination: paginationReactive,
       facultyOptions,
       yearOptions,
       monthOptions,
@@ -531,31 +594,7 @@ export default {
             }
           })
         },
-        deleteUser(row) {
-          $.ajax({
-            url: "https://data.lxcode.xyz/api/admin/user/delete/",
-            type: "post",
-            headers: {
-              Authorization: "Bearer " + store.state.user.token,
-            },
-            data: {
-              id: row.id,
-            },
-            success(resp) {
-              if (resp.error_message === "success") {
-                message.success("删除成功！");
-                let allUsersCopy = allUsers.value;
-                allUsers.value = []
-                for (const user of allUsersCopy) {
-                  if (Number(user.id) !== Number(row.id)) {
-                    allUsers.value.push(user);
-                  }
-                }
-              } else {
-                message.error(resp.error_message);
-              }
-            }
-          })
+        deleteUser() {
         },
       }),
     }

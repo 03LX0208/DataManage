@@ -1,6 +1,8 @@
 package com.datamanagebackend.controller;
 
+import com.datamanagebackend.mapper.StudentMapper;
 import com.datamanagebackend.mapper.UserMapper;
+import com.datamanagebackend.pojo.Student;
 import com.datamanagebackend.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,13 @@ import java.util.Map;
 
 @RestController
 public class TestController {
+
     @Autowired
-    private UserMapper userMapper;
+    private StudentMapper studentMapper;
 
     @GetMapping("/api/test/")
-    public List<User> get(@RequestParam Map<String, String> data) {
-        int mi = Integer.parseInt(data.get("mi"));
-        int mx = Integer.parseInt(data.get("mx"));
-        return userMapper.getZZP(mi, mx);
+    public List<Student> get(@RequestParam Map<String, String> data) {
+        int id = Integer.parseInt(data.get("faculty_id"));
+        return studentMapper.selectStudentByFacultyId(id);
     }
 }

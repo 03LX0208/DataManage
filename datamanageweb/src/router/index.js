@@ -1,15 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/HomeView.vue'
+import HomeView from "@/views/HomeView";
 import Login from '../views/LoginView.vue'
 import Register from '../views/RegisterView'
 import NotFound from "@/components/error_page/NotFound";
-import TimeTable from "@/views/StudentViews/TimeTableView";
+import TimeTable from "@/views/Student/TimeTableView";
+import NotPermit from "@/components/error_page/NotPermit";
+import CourseGraph from "@/components/CourseGraph";
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: Home
+    component: HomeView,
   },
   {
     path: '/login/',
@@ -25,6 +27,16 @@ const routes = [
     path: '/404/',
     name: '404',
     component: NotFound
+  },
+  {
+    path: '/403/',
+    name: '403',
+    component: NotPermit
+  },
+  {
+    path: '/course/graph/:id',
+    name: 'course-graph',
+    component: CourseGraph,
   },
   {
     path: '/student/time-table/',
