@@ -43,7 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/faculty/get-all/",
                         "/api/course/get-all/",
                         "/api/course/graph/",
-                        "/api/classroom/get-all/"
+                        "/api/classroom/get-all/",
+                        "/api/student-section/get-all-section/"
                 ).permitAll()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyRequest().authenticated();

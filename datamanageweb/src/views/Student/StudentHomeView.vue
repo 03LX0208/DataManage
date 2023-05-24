@@ -1,109 +1,55 @@
 <template>
-  <NavBar/>
-  <div class="container" v-if="$store.state.user.identity === 'student'">
-    <div class="row">
-      <div class="col"></div>
-      <div class="col-2">
-        <n-list hoverable clickable style="margin-top: 20px;">
-          <n-list-item>
-            <n-thing title="相见恨晚" content-style="margin-top: 10px;">
-              奋勇呀然后休息呀<br>
-              完成你伟大的人生
-            </n-thing>
-          </n-list-item>
-          <n-list-item>
-            <n-thing title="相见恨晚" content-style="margin-top: 10px;">
-              奋勇呀然后休息呀<br>
-              完成你伟大的人生
-            </n-thing>
-          </n-list-item>
-          <n-list-item>
-            <n-thing title="相见恨晚" content-style="margin-top: 10px;">
-              奋勇呀然后休息呀<br>
-              完成你伟大的人生
-            </n-thing>
-          </n-list-item>
-          <n-list-item>
-            <n-thing title="相见恨晚" content-style="margin-top: 10px;">
-              奋勇呀然后休息呀<br>
-              完成你伟大的人生
-            </n-thing>
-          </n-list-item>
-        </n-list>
-      </div>
-
-      <div class="col-6">
-        <n-card
-            title="📖 如何成功"
-            embedded
-            :bordered="false"
-            style="margin-top: 20px; margin-bottom: 20px;"
-            hoverable
-        >
-          如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
-          996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
-        </n-card>
-        <n-card
-            title="⭐ 我的收藏"
-            embedded
-            :bordered="false"
-            hoverable
-        >
-          如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
-          996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
-        </n-card>
-        <div class="row">
-          <div class="col">
-            <n-card
-                title="📖 如何成功"
-                embedded
-                :bordered="false"
-                style="margin-top: 20px; margin-bottom: 20px;"
-                hoverable
-            >
-              如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
-              996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
-            </n-card>
-          </div>
-          <div class="col">
-            <n-card
-                title="📖 如何成功"
-                embedded
-                :bordered="false"
-                style="margin-top: 20px; margin-bottom: 20px;"
-                hoverable
-            >
-              如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
-              996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
-            </n-card>
-          </div>
+  <div class="all">
+    <NavBar/>
+    <div class="container">
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-8">
+          <n-card
+              title="⭐ 常用功能"
+              embedded
+              :bordered="false"
+              style="margin-top: 20px; margin-bottom: 20px;"
+              hoverable
+          >
+           <n-space>
+             <n-button strong secondary round type="info" size="large" @click="pushToSelect">
+               选课系统
+             </n-button>
+           </n-space>
+          </n-card>
         </div>
+        <div class="col"></div>
       </div>
-      <div class="col"></div>
     </div>
   </div>
 </template>
 
 <script>
 import NavBar from "@/components/NavBar";
-import {NList, NListItem, NThing, NCard } from 'naive-ui';
+import {NCard, NSpace, NButton } from 'naive-ui';
+
+const pushToSelect = () => {
+  window.open("/student/select-course/", '_blank');
+}
 
 export default {
   components: {
     NavBar,
-    NList,
-    NListItem,
-    NThing,
     NCard,
+    NSpace,
+    NButton,
   },
   setup() {
-
+    return {
+      pushToSelect,
+    }
   }
 }
 </script>
 
 <style scoped>
-#all {
+.all {
   min-height: 100vh;
   background-color: rgb(241,241,243);
 }

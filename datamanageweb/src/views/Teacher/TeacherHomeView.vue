@@ -74,11 +74,20 @@
         <div class="col"></div>
       </div>
       <div class="row">
-<!--        <div class="col-2"></div>-->
         <div class="col-12">
           <n-card
             title="任教课程"
           >
+            <template #header-extra>
+              <n-switch size="large" checked-value="true" unchecked-value="false" @update:value="handleSwitch">
+                <template #checked>
+                  查看所有课程
+                </template>
+                <template #unchecked>
+                  查看时间线
+                </template>
+              </n-switch>
+            </template>
             <n-data-table
                 striped
                 :columns="sectionCols"
@@ -87,10 +96,30 @@
                 :bordered="false"
                 :single-line="false"
                 style="font-size: 15px;"
+                v-if="!switchOK"
             />
+            <div v-if="switchOK">
+              <div class="row">
+                <div class="col-5"></div>
+                <div class="col-2">
+                  <n-timeline size="large" style="justify-content: center;">
+                    <n-timeline-item
+                        v-for="timeline in timelines"
+                        :key="timeline.time"
+                        type="success"
+                        :title="timeline.course"
+                        :content="timeline.site"
+                        :time="timeline.time"
+                        class="d-flex"
+                    />
+                  </n-timeline>
+                </div>
+                <div class="col-5"></div>
+              </div>
+            </div>
+
           </n-card>
         </div>
-<!--        <div class="col-2"></div>-->
       </div>
     </div>
   </div>
@@ -108,7 +137,10 @@ import {
   useMessage,
   NInput,
   NDataTable,
-  NPopconfirm
+  NPopconfirm,
+    NSwitch,
+    NTimeline,
+    NTimelineItem,
 } from 'naive-ui';
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
@@ -151,6 +183,9 @@ export default {
     NSelect,
     NCascader,
     NDataTable,
+    NSwitch,
+    NTimeline,
+    NTimelineItem,
   },
   setup() {
     const store = useStore();
@@ -277,7 +312,7 @@ export default {
           render(row) {
             const buttons = [
               {
-                text: "删除课程",
+                text: "取消",
                 color: "error",
                 onClick: () => deleteSection(row)
               }
@@ -301,7 +336,7 @@ export default {
                 },
                 success(resp) {
                   if (resp.error_message === "success") {
-                    message.success("删除成功！");
+                    message.success("取消成功！");
                     setTimeout(() => { location.reload(); }, 1000)
                   } else {
                     message.error(resp.error_message);
@@ -340,7 +375,7 @@ export default {
                                         { default: () => text }
                                     ),
                                 default: () =>
-                                    h("span", {}, "您确定要删除该课程吗？")
+                                    h("span", {}, "您确定要取消该课程吗？")
                               }
                           )
                       )
@@ -353,7 +388,7 @@ export default {
     };
 
     const paginationReactive = reactive({
-      page: 2,
+      page: 1,
       pageSize: 5,
       showSizePicker: true,
       pageSizes: [3, 5, 7],
@@ -366,7 +401,30 @@ export default {
       }
     });
 
+    let switchOK = ref(false);
+    const handleSwitch = (value) => {
+      switchOK.value = value === "true";
+    }
+
+    let timelines = ref([]);
+    $.ajax({
+      url: "https://data.lxcode.xyz/api/section/query/timeline/",
+      type: "get",
+      data: {
+        teacher_id: store.state.user.username,
+      },
+      headers: {
+        Authorization: "Bearer " + store.state.user.token,
+      },
+      success(resp) {
+        console.log(resp);
+        timelines.value = resp;
+      }
+    })
     return {
+      timelines,
+      switchOK,
+      handleSwitch,
       paginationReactive,
       myCourses,
       addSection,

@@ -6,21 +6,6 @@ create table classroom
     classroom_site varchar(20) not null
 );
 
-create table appoint_classroom
-(
-    appoint_id   int auto_increment
-        primary key,
-    user_id      int          not null,
-    classroom_id int          not null,
-    appoint_time varchar(100) not null,
-    constraint appoint_classroom_classroom_classroom_id_fk
-        foreign key (classroom_id) references classroom (classroom_id)
-            on update cascade on delete cascade
-);
-
-create index appoint_classroom_user_username_fk
-    on appoint_classroom (user_id);
-
 create table faculty
 (
     faculty_id   int         not null
@@ -125,10 +110,11 @@ create table section
 (
     section_id   int auto_increment
         primary key,
-    course_id    int          not null,
-    teacher_id   int          not null,
-    classroom_id int          not null,
-    section_time varchar(100) null,
+    course_id    int                  not null,
+    teacher_id   int                  not null,
+    classroom_id int                  not null,
+    section_time varchar(100)         null,
+    is_completed tinyint(1) default 0 not null,
     constraint section_section_id_uindex
         unique (section_id),
     constraint section_classroom_classroom_id_fk
@@ -139,6 +125,19 @@ create table section
         foreign key (teacher_id) references teacher (teacher_id)
 );
 
-# appoint 和 stu_sec
+create table student_section
+(
+    student_id int not null,
+    section_id int not null,
+    grade      int null,
+    constraint student_section_section_section_id_fk
+        foreign key (section_id) references section (section_id),
+    constraint student_section_student_student_id_fk
+        foreign key (student_id) references student (student_id)
+);
+
+
+
+
 
 

@@ -56,20 +56,9 @@
           </div>
           <div style="margin-top: 6px">入学时间</div>
           <div class="row">
-            <div class="col-2">
-              <n-select placeholder="" v-model:value="userToBeAdd.year" :options="yearOptions"
-                        @update:value="updateOptions(userToBeAdd.year, userToBeAdd.month, 0)" />
+            <div class="col-6">
+              <n-date-picker v-model:value="userToBeAdd.enter_date" @update:value="updateDate" />
             </div>
-            <div class="col-2">
-              <n-select placeholder="" v-model:value="userToBeAdd.month" :options="monthOptions"
-                        @update:value="updateOptions(userToBeAdd.year, userToBeAdd.month, 1)" />
-            </div>
-
-            <div class="col-2">
-              <n-select placeholder="" v-model:value="userToBeAdd.day" :options="dayOptions" />
-            </div>
-
-            <div class="col"></div>
           </div>
           <div style="margin-top: 6px;">学院</div>
           <div class="row">
@@ -151,7 +140,7 @@
 </template>
 
 <script>
-import {NButton, NDataTable, NSpace, useMessage, NModal, NCard, NSelect, NInput, NPopconfirm} from "naive-ui";
+import {NButton, NDataTable, NSpace, useMessage, NModal, NCard, NSelect, NInput, NPopconfirm, NDatePicker} from "naive-ui";
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import $ from "jquery";
@@ -165,6 +154,7 @@ export default {
     NButton,
     NSpace,
     NInput,
+    NDatePicker,
   },
   setup() {
     const store = useStore();
@@ -221,6 +211,7 @@ export default {
       student_enter_date: null,
       student_age: null,
       student_telephone: null,
+      enter_date: null,
       faculty_id: null,
       teacher_id: null,
       teacher_name: null,
@@ -232,9 +223,6 @@ export default {
       admin_age: null,
       admin_gender: null,
       admin_telephone: null,
-      year: null,
-      month: null,
-      day: null,
     });
     let identityOptions = ref([
       {
@@ -275,76 +263,15 @@ export default {
       }
     });
 
-    let yearOptions = ref([]);
-    let monthOptions = ref([]);
-    let dayOptions = ref([]);
-    for (let i = 2000; i <= 2023; i++) yearOptions.value.push({
-      label: i,
-      value: i,
-    });
 
-    const updateOptions = (year, month, sig) => {
-      // 获取当前日期
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const currentMonth = today.getMonth() + 1;
-      const currentDate = today.getDate();
-
-      if (sig === 0) {
-        userToBeAdd.month = null;
-      } else if (sig === 1) userToBeAdd.day = null;
-
-      // 如果选择年份大于当前年份，则只能选择1~12月
-      if (year < currentYear) {
-        monthOptions.value = [];
-        for (let i = 1; i <= 12; i++) monthOptions.value.push({
-          label: i,
-          value: i,
-        });
-      } else {
-        // 否则如果选择年份等于当前年份，则只能选择当前月份之前的月份
-        monthOptions.value = [];
-        for (let i = 1; i <= currentMonth; i++) monthOptions.value.push({
-          label: i,
-          value: i,
-        });
-      }
-
-      // 如果选择的月份等于当前月份，则只能选择当前日期之前的日期
-      if (year === currentYear && month === currentMonth) {
-        dayOptions.value = [];
-        for (let i = 1; i <= currentDate; i++) dayOptions.value.push({
-          label: i,
-          value: i,
-        });
-      } else {
-        dayOptions.value = [];
-        // 否则根据所选月份计算出可以选择的日期范围
-        const daysInMonth = new Date(year, month, 0).getDate();
-        for (let i = 1; i <= daysInMonth; i++) dayOptions.value.push({
-          label: i,
-          value: i,
-        });
-      }
-    }
 
     const addUser = () => {
       let enter_date = ref("");
-
-      if (userToBeAdd.identity === "student") {
-        if (userToBeAdd.day === null || userToBeAdd.month === null || userToBeAdd.year === null) {
-          message.error("请将入学日期完善！");
-          return;
-        }
-        enter_date.value += String(userToBeAdd.year) + "-";
-        if (userToBeAdd.month < 10) {
-          enter_date.value += "0" + String(userToBeAdd.month);
-        } else enter_date.value += String(userToBeAdd.month);
-        enter_date.value += "-";
-        if (userToBeAdd.day < 10) {
-          enter_date.value += "0" + String(userToBeAdd.day);
-        } else enter_date.value += String(userToBeAdd.day);
-      }
+      const date = new Date(userToBeAdd.enter_date);
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      enter_date.value = `${year}-${month}-${day}`;
 
       $.ajax({
         url: "https://data.lxcode.xyz/api/admin/user/update/",
@@ -516,7 +443,7 @@ export default {
     };
 
     const paginationReactive = reactive({
-      page: 2,
+      page: 1,
       pageSize: 7,
       showSizePicker: true,
       pageSizes: [3, 5, 7, 9, 11],
@@ -529,18 +456,24 @@ export default {
       }
     });
 
+    const updateDate = () => {
+      const nowDate = new Date();
+      const nowYear = nowDate.getFullYear();
+      const nowMonth = nowDate.getMonth();
+      const nowDay = nowDate.getDate();
+      const NOW = new Date(nowYear, nowMonth, nowDay).getTime();
+      if (userToBeAdd.enter_date > NOW) userToBeAdd.enter_date = NOW;
+    }
+
     return {
+      updateDate,
       pagination: paginationReactive,
       facultyOptions,
-      yearOptions,
-      monthOptions,
-      dayOptions,
       userToBeAdd,
       showAddUserModalBtn,
       showAddUserModal,
       identityOptions,
       addUser,
-      updateOptions,
       genderOptions,
       allUsers,
       usersColumns: createUsersColumns({
@@ -561,7 +494,6 @@ export default {
               identity: identity,
             },
             success(resp) {
-              console.log(facultyOptions.value);
               if (resp.identity === "学生") {
                 userToBeAdd.identity = "student";
                 userToBeAdd.student_id = resp.id;
@@ -574,7 +506,8 @@ export default {
                 userToBeAdd.year = parseInt(resp.enter_date.slice(0, 4));
                 userToBeAdd.month = parseInt(resp.enter_date.slice(5, 7));
                 userToBeAdd.day = parseInt(resp.enter_date.slice(8, 10));
-                updateOptions(userToBeAdd.year, userToBeAdd.month, 2);
+                const nowDate = new Date(userToBeAdd.year, userToBeAdd.month - 1, userToBeAdd.day);
+                userToBeAdd.enter_date = nowDate.getTime();
               } else if (resp.identity === "老师") {
                 userToBeAdd.identity = "teacher";
                 userToBeAdd.teacher_id = resp.id;

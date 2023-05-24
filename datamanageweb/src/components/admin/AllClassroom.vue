@@ -46,7 +46,7 @@ export default {
           key: "classroomName"
         },
         {
-          title: "教室地址",
+          title: "教学楼",
           key: "classroomSite"
         },
         {
@@ -133,7 +133,7 @@ export default {
     };
 
     const paginationReactive = reactive({
-      page: 2,
+      page: 1,
       pageSize: 7,
       showSizePicker: true,
       pageSizes: [3, 5, 7, 9, 11],

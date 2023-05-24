@@ -1,6 +1,7 @@
 package com.datamanagebackend.controller.section;
 
 import com.datamanagebackend.pojo.Section;
+import com.datamanagebackend.service.impl.section.Util.Timeline;
 import com.datamanagebackend.service.section.QueryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,5 +21,10 @@ public class QueryController {
     @GetMapping("/by-teacher-id/")
     public List<Map<String, String>> getCoursesByTeacherId(@RequestParam Map<String, String> data) {
         return queryService.getCoursesByTeacherId(Integer.parseInt(data.get("teacher_id")));
+    }
+
+    @GetMapping("/timeline/")
+    public List<Timeline> getTimelineByTeacherId(@RequestParam Map<String, String> data) {
+        return queryService.getTimelineByTeacherId(Integer.parseInt(data.get("teacher_id")));
     }
 }

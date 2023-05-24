@@ -1,5 +1,6 @@
 package com.datamanagebackend.controller;
 
+import com.datamanagebackend.mapper.SectionMapper;
 import com.datamanagebackend.mapper.StudentMapper;
 import com.datamanagebackend.mapper.UserMapper;
 import com.datamanagebackend.pojo.Student;
@@ -17,11 +18,10 @@ import java.util.Map;
 public class TestController {
 
     @Autowired
-    private StudentMapper studentMapper;
+    private SectionMapper sectionMapper;
 
     @GetMapping("/api/test/")
-    public List<Student> get(@RequestParam Map<String, String> data) {
-        int id = Integer.parseInt(data.get("faculty_id"));
-        return studentMapper.selectStudentByFacultyId(id);
+    public List<Map<String, Object>> get(@RequestParam Map<String, String> data) {
+        return sectionMapper.getSectionToSelect();
     }
 }

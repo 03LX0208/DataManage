@@ -5,7 +5,7 @@
         <NavBar/>
       </div>
       <div style="width: 100%; text-align: center;">
-        <div id="main" style="display: inline-block; width: 600px; height: 600px"></div>
+        <div id="main" style="display: inline-block; width: 1200px; height: 700px"></div>
       </div>
     </div>
   </div>

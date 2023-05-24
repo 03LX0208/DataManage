@@ -9,23 +9,44 @@
       </div>
     </div>
   </div>
+  <n-date-picker type="date" v-model:value="time" @update:value="print" />
 </template>
 
 <script>
 import NavBar from "@/components/NavBar";
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import * as echarts from 'echarts/core';
 import { TitleComponent, TooltipComponent, TimelineComponent, GridComponent  } from 'echarts/components';
 import { GraphChart, BarChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
+import { NDatePicker } from 'naive-ui'
 
 echarts.use([TitleComponent, TooltipComponent, GraphChart, CanvasRenderer, TimelineComponent, GridComponent, BarChart]);
 
 export default {
   components: {
     NavBar,
+    NDatePicker,
   },
   setup() {
+    let time = ref(null);
+
+    const dataChange = () => {
+      const date = new Date(time.value);
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const formattedDate = `${year}-${month}-${day}`;
+      console.log(formattedDate);
+
+      const nowDate = new Date();
+      const nowYear = nowDate.getFullYear();
+      const nowMonth = nowDate.getMonth();
+      const nowDay = nowDate.getDate();
+      const NOW = new Date(nowYear, nowMonth, nowDay).getTime();
+      if (time.value > NOW) time.value = NOW;
+    }
+
     let echart = echarts;
     onMounted(() => {
       let chart = echart.init(document.getElementById('main'));
@@ -101,6 +122,10 @@ export default {
       //     target: '数据结构'
       //   },
       // ];
+    return {
+      time,
+      dataChange,
+    }
   }
 }
 </script>

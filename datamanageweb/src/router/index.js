@@ -6,6 +6,7 @@ import NotFound from "@/components/error_page/NotFound";
 import TimeTable from "@/views/Student/TimeTableView";
 import NotPermit from "@/components/error_page/NotPermit";
 import CourseGraph from "@/components/CourseGraph";
+import SelectSection from "@/views/Student/SelectSection";
 
 const routes = [
   {
@@ -37,6 +38,11 @@ const routes = [
     path: '/course/graph/:id',
     name: 'course-graph',
     component: CourseGraph,
+  },
+  {
+    path: '/student/select-course/',
+    name: 'select-course',
+    component: SelectSection,
   },
   {
     path: '/student/time-table/',

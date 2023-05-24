@@ -3,8 +3,10 @@ package com.datamanagebackend.service.impl.course;
 import com.datamanagebackend.mapper.CourseMapper;
 import com.datamanagebackend.mapper.FacultyMapper;
 import com.datamanagebackend.mapper.PilotCourseMapper;
+import com.datamanagebackend.mapper.SectionMapper;
 import com.datamanagebackend.pojo.Course;
 import com.datamanagebackend.pojo.Faculty;
+import com.datamanagebackend.pojo.Section;
 import com.datamanagebackend.pojo.Student;
 import com.datamanagebackend.service.course.CourseCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class CourseCrudServiceImpl implements CourseCrudService {
 
     @Autowired
     private PilotCourseMapper pilotCourseMapper;
+
+    @Autowired
+    private SectionMapper sectionMapper;
 
     @Override
     public Map<String, String> addCourse(Map<String, String> data) {
@@ -120,6 +125,15 @@ public class CourseCrudServiceImpl implements CourseCrudService {
     public Map<String, String> deleteCourse(Map<String, String> data) {
         Map<String, String> res = new HashMap<>();
         Integer course_id = Integer.parseInt(data.get("course_id"));
+
+
+
+        List<Section> sectionList = sectionMapper.selectSectionByCourseId(course_id);
+        if (sectionList.size() != 0) {
+            res.put("error_message", "该课程已开课！");
+            return res;
+        }
+
         courseMapper.deleteCourseByCourseId(course_id);
         res.put("error_message", "success");
         return res;
