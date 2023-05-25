@@ -1,29 +1,43 @@
 <template>
-  <n-data-table
-      striped
-      :columns="facultiesColumns"
-      :data="allFaculties"
-      :pagination="paginationReactive"
-      :bordered="false"
-      :single-line="false"
-      style="font-size: 15px;"
-  />
+  <n-card>
+    <n-data-table
+        striped
+        :columns="facultiesColumns"
+        :data="allFaculties"
+        :pagination="paginationReactive"
+        :bordered="false"
+        :single-line="false"
+        style="font-size: 15px;"
+    />
+    <template #footer>
+      <n-statistic label="一共有" tabular-nums class="">
+        <n-number-animation  :from="0" :to="coursesCount" />
+        <template #suffix>
+          门课程。
+        </template>
+      </n-statistic>
+    </template>
+  </n-card>
 </template>
 
 <script>
-import {NButton, NDataTable, useMessage, NSpace, NPopconfirm} from "naive-ui";
+import {NButton, NDataTable, useMessage, NSpace, NPopconfirm, NStatistic, NNumberAnimation, NCard} from "naive-ui";
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import $ from "jquery";
 
 export default {
   components: {
+    NStatistic,
+    NCard,
+    NNumberAnimation,
     NDataTable,
   },
   setup() {
     const store = useStore();
     const message = useMessage();
     let allCourses = ref([]);
+    let coursesCount = ref(null);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/faculty/get-all/",
@@ -33,6 +47,7 @@ export default {
           url: "https://data.lxcode.xyz/api/course/get-all/",
           type: "get",
           success(resp) {
+            coursesCount.value = resp.length;
             for (const course of resp) {
               for (const faculty of response) {
                 if (Number(faculty.facultyId) === Number(course.facultyId)) {
@@ -190,6 +205,7 @@ export default {
 
 
     return {
+      coursesCount,
       paginationReactive,
       allFaculties: allCourses,
       facultiesColumns: createFacultyColumns({

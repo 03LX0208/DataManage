@@ -27,4 +27,9 @@ public class QueryController {
     public List<Timeline> getTimelineByTeacherId(@RequestParam Map<String, String> data) {
         return queryService.getTimelineByTeacherId(Integer.parseInt(data.get("teacher_id")));
     }
+
+    @GetMapping("/score/")
+    public List<Map<String, Object>> getSectionScoreBySectionId(@RequestParam Map<String, String> data) {
+        return queryService.getSectionScore(Integer.parseInt(data.get("section_id")));
+    }
 }

@@ -1,10 +1,10 @@
 <template>
   <div class="all">
     <NavBar/>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         <div class="col"></div>
-        <div class="col-8">
+        <div class="col-6">
           <n-card
               title="⭐ 常用功能"
               embedded
@@ -15,6 +15,9 @@
             <NSpace>
               <n-button tertiary round type="info" size="large" @click="showAddSectionModalBtn">
                 开课
+              </n-button>
+              <n-button tertiary round type="success" size="large" @click="pushToHistorySection">
+                历史课程
               </n-button>
               <n-modal v-model:show="showAddSectionModal">
                 <n-card
@@ -47,6 +50,12 @@
                       </div>
                     </div>
                     <div class="row">
+                      <div class="col-4">
+                        课程容量
+                        <n-input show-count v-model:value="sectionToAdd.capacity" placeholder="纯数字组成" />
+                      </div>
+                    </div>
+                    <div class="row">
                       <div class="col-8">
                         上课时间
                         <n-cascader
@@ -74,7 +83,8 @@
         <div class="col"></div>
       </div>
       <div class="row">
-        <div class="col-12">
+        <div class="col-1"></div>
+        <div class="col-10">
           <n-card
             title="任教课程"
           >
@@ -88,16 +98,25 @@
                 </template>
               </n-switch>
             </template>
-            <n-data-table
-                striped
-                :columns="sectionCols"
-                :data="myCourses"
-                :pagination="paginationReactive"
-                :bordered="false"
-                :single-line="false"
-                style="font-size: 15px;"
-                v-if="!switchOK"
-            />
+            <div v-if="!switchOK">
+              <n-data-table
+                  striped
+                  :columns="sectionCols"
+                  :data="myCourses"
+                  :pagination="paginationReactive"
+                  :bordered="false"
+                  :single-line="false"
+                  style="font-size: 15px;"
+              />
+            </div>
+            <template #footer>
+              <n-statistic label="这学期您一共执教" tabular-nums class="">
+                <n-number-animation  :from="0" :to="sectionCount" />
+                <template #suffix>
+                  门课程。
+                </template>
+              </n-statistic>
+            </template>
             <div v-if="switchOK">
               <div class="row">
                 <div class="col-5"></div>
@@ -141,6 +160,7 @@ import {
     NSwitch,
     NTimeline,
     NTimelineItem,
+  NStatistic, NNumberAnimation,
 } from 'naive-ui';
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
@@ -172,6 +192,10 @@ function getOptions() {
   return options;
 }
 
+const pushToHistorySection = () => {
+  window.open('/teacher/history-section/', '_blank');
+}
+
 export default {
   components: {
     NInput,
@@ -186,12 +210,14 @@ export default {
     NSwitch,
     NTimeline,
     NTimelineItem,
+    NStatistic, NNumberAnimation,
   },
   setup() {
     const store = useStore();
     const message = useMessage();
     let courseOptions = ref([]);
     let classroomOptions = ref([]);
+    let sectionCount = ref(null);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/classroom/get-all/",
@@ -199,7 +225,7 @@ export default {
       success(resp) {
         for (const classroom of resp) {
           classroomOptions.value.push({
-            label: classroom.classroomName,
+            label: classroom.classroomSite + classroom.classroomName,
             value: classroom.classroomId
           });
         }
@@ -224,6 +250,7 @@ export default {
       course_id: null,
       classroom_id: null,
       section_time: null,
+      capacity: null,
     });
 
     let showAddSectionModal = ref(false);
@@ -233,6 +260,10 @@ export default {
 
     const addSection = () => {
       let time = "";
+      if (sectionToAdd.section_time === null) {
+        message.error("未选择上课时间！");
+        return;
+      }
       for (const tm of sectionToAdd.section_time) {
         time += String(tm) + " ";
       }
@@ -248,6 +279,7 @@ export default {
           course_id: sectionToAdd.course_id,
           classroom_id: sectionToAdd.classroom_id,
           section_time: time,
+          capacity: sectionToAdd.capacity,
         },
         success(resp) {
           if (resp.error_message === "success") {
@@ -262,21 +294,44 @@ export default {
 
     let myCourses = ref([]);
     $.ajax({
-      url: "https://data.lxcode.xyz/api/section/query/by-teacher-id/",
+      url: "https://data.lxcode.xyz/api/student-section/query/section-now-count/",
       type: "get",
-      data: {
-        teacher_id: store.state.user.username,
-      },
       headers: {
         Authorization: "Bearer " + store.state.user.token,
       },
-      success(resp) {
-        myCourses.value = resp;
+      success(response) {
+        $.ajax({
+          url: "https://data.lxcode.xyz/api/section/query/by-teacher-id/",
+          type: "get",
+          data: {
+            teacher_id: store.state.user.username,
+          },
+          headers: {
+            Authorization: "Bearer " + store.state.user.token,
+          },
+          success(resp) {
+            for (let course of resp) {
+              if (course.is_completed === "1") continue;
+              for (const capacity of response) {
+                if (Number(capacity.section_id) === Number(course.section_id)) {
+                  course.now_capacity = capacity.now_capacity;
+                  course.total_capacity = capacity.total_capacity;
+                  break;
+                }
+              }
+              myCourses.value.push(course)
+            }
+            sectionCount.value = myCourses.value.length;
+          }
+        });
       }
-    })
+    });
+
+
+
 
     const createSectionColumns = ({
-                                      deleteSection
+                                      deleteSection, completeSection
                                     }) => {
       return [
         {
@@ -306,6 +361,14 @@ export default {
         {
           title: "学院",
           key: "faculty_name"
+        },
+        {
+          title: "已选人数",
+          key: "now_capacity"
+        },
+        {
+          title: "课程容量",
+          key: "total_capacity"
         },
         {
           title: "操作",
@@ -383,6 +446,83 @@ export default {
                 ]
             );
           }
+        },
+        {
+          title: "结课",
+          render(row) {
+            const buttons = [
+              {
+                text: "结课",
+                color: "info",
+                onClick: () => completeSection(row)
+              }
+            ];
+
+            const handlePositiveClick = (row) => {
+              return () => {
+                helper(row);
+              };
+            };
+
+            const helper = (row) => {
+              $.ajax({
+                url: "https://data.lxcode.xyz/api/section/complete/",
+                type: "post",
+                headers: {
+                  Authorization: "Bearer " + store.state.user.token,
+                },
+                data: {
+                  section_id: row.section_id,
+                },
+                success(resp) {
+                  if (resp.error_message === "success") {
+                    message.success("结课成功！");
+                    setTimeout(() => { location.reload(); }, 1000)
+                  } else {
+                    message.error(resp.error_message);
+                  }
+                }
+              });
+            }
+
+            const handleNegativeClick = () => {};
+
+            return h(
+                "div",
+                {},
+                [
+                  h(
+                      NSpace,
+                      { align: "center" },
+                      buttons.map(({ text, color, onClick }, index) =>
+                          h(
+                              NPopconfirm,
+                              {
+                                onPositiveClick: handlePositiveClick(row),
+                                onNegativeClick: handleNegativeClick,
+                                key: index
+                              },
+                              {
+                                trigger: () =>
+                                    h(
+                                        NButton,
+                                        {
+                                          strong: true,
+                                          type: color,
+                                          size: "small",
+                                          onClick
+                                        },
+                                        { default: () => text }
+                                    ),
+                                default: () =>
+                                    h("span", {}, "您确定要结课吗？")
+                              }
+                          )
+                      )
+                  )
+                ]
+            );
+          }
         }
       ];
     };
@@ -417,11 +557,13 @@ export default {
         Authorization: "Bearer " + store.state.user.token,
       },
       success(resp) {
-        console.log(resp);
         timelines.value = resp;
       }
-    })
+    });
+
     return {
+      sectionCount,
+      pushToHistorySection,
       timelines,
       switchOK,
       handleSwitch,
@@ -435,7 +577,8 @@ export default {
       courseOptions,
       classroomOptions,
       sectionCols: createSectionColumns({
-        deleteSection() {}
+        deleteSection() {},
+        completeSection() {}
       })
     }
   }

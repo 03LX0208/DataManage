@@ -1,9 +1,10 @@
 <template>
   <div class="all">
     <NavBar/>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-12">
+        <div class="col-1"></div>
+        <div class="col-10">
           <n-card title="选课系统">
             <n-data-table
                 striped

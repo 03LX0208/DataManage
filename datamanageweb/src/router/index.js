@@ -7,6 +7,10 @@ import TimeTable from "@/views/Student/TimeTableView";
 import NotPermit from "@/components/error_page/NotPermit";
 import CourseGraph from "@/components/CourseGraph";
 import SelectSection from "@/views/Student/SelectSection";
+import HistorySection from "@/views/Teacher/HistorySection";
+import StudentScore from "@/views/Teacher/StudentScore";
+import StudentGrade from "@/views/Student/StudentGrade";
+import StudentCourseGraph from "@/views/Student/StudentCourseGraph";
 
 const routes = [
   {
@@ -40,9 +44,29 @@ const routes = [
     component: CourseGraph,
   },
   {
+    path: '/teacher/history-section/',
+    name: 'history-section',
+    component: HistorySection,
+  },
+  {
     path: '/student/select-course/',
     name: 'select-course',
     component: SelectSection,
+  },
+  {
+    path: '/student/select-course/graph/:id',
+    name: 'select-course-graph',
+    component: StudentCourseGraph,
+  },
+  {
+    path: '/student/grade/',
+    name: 'student-grade',
+    component: StudentGrade,
+  },
+  {
+    path: '/teacher/history-section/score/:id',
+    name: 'history-section-score',
+    component: StudentScore,
   },
   {
     path: '/student/time-table/',

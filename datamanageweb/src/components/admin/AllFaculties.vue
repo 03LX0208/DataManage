@@ -1,35 +1,50 @@
 <template>
-  <n-data-table
-      striped
-      :columns="facultiesColumns"
-      :data="allFaculties"
-      :pagination="paginationReactive"
-      :bordered="false"
-      :single-line="false"
-      style="font-size: 15px;"
-  />
+  <n-card>
+    <n-data-table
+        striped
+        :columns="facultiesColumns"
+        :data="allFaculties"
+        :pagination="paginationReactive"
+        :bordered="false"
+        :single-line="false"
+        style="font-size: 15px;"
+    />
+    <template #footer>
+      <n-statistic label="一共有" tabular-nums class="">
+        <n-number-animation  :from="0" :to="facultiesCount" />
+        <template #suffix>
+          个学院。
+        </template>
+      </n-statistic>
+    </template>
+  </n-card>
 </template>
 
 <script>
-import {NButton, NDataTable, useMessage, NSpace, NPopconfirm} from "naive-ui";
+import {NButton, NDataTable, useMessage, NSpace, NPopconfirm, NStatistic, NNumberAnimation, NCard} from "naive-ui";
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import $ from "jquery";
 
 export default {
   components: {
+    NCard,
+    NNumberAnimation,
+    NStatistic,
     NDataTable,
   },
   setup() {
     const store = useStore();
     const message = useMessage();
     let allFaculties = ref([]);
+    let facultiesCount = ref(null);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/faculty/get-all/",
       type: "get",
       success(resp) {
         allFaculties.value = resp;
+        facultiesCount.value = resp.length;
       }
     });
 
@@ -148,6 +163,7 @@ export default {
 
 
     return {
+      facultiesCount,
       paginationReactive,
       allFaculties,
       facultiesColumns: createFacultyColumns({

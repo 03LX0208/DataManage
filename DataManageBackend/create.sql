@@ -114,6 +114,7 @@ create table section
     teacher_id   int                  not null,
     classroom_id int                  not null,
     section_time varchar(100)         null,
+    capacity     int                  not null,
     is_completed tinyint(1) default 0 not null,
     constraint section_section_id_uindex
         unique (section_id),
@@ -135,7 +136,6 @@ create table student_section
     constraint student_section_student_student_id_fk
         foreign key (student_id) references student (student_id)
 );
-
 
 
 

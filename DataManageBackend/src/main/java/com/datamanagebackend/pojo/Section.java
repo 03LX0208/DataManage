@@ -16,5 +16,6 @@ public class Section {
     private Integer teacherId;
     private Integer classroomId;
     private String sectionTime;
+    private Integer capacity;
     private Integer isCompleted;
 }

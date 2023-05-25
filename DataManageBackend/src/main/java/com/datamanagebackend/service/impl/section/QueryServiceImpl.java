@@ -1,9 +1,6 @@
 package com.datamanagebackend.service.impl.section;
 
-import com.datamanagebackend.mapper.ClassroomMapper;
-import com.datamanagebackend.mapper.CourseMapper;
-import com.datamanagebackend.mapper.FacultyMapper;
-import com.datamanagebackend.mapper.SectionMapper;
+import com.datamanagebackend.mapper.*;
 import com.datamanagebackend.pojo.Classroom;
 import com.datamanagebackend.pojo.Course;
 import com.datamanagebackend.pojo.Faculty;
@@ -17,6 +14,9 @@ import java.util.*;
 
 @Service
 public class QueryServiceImpl implements QueryService {
+    @Autowired
+    private StudentSectionMapper studentSectionMapper;
+
     @Autowired
     private SectionMapper sectionMapper;
 
@@ -42,6 +42,7 @@ public class QueryServiceImpl implements QueryService {
             one.put("course_name", course.getCourseName());
             one.put("course_credit", course.getCourseCredit().toString());
             one.put("course_period", course.getCoursePeriod().toString());
+            one.put("is_completed", section.getIsCompleted().toString());
             Faculty faculty = facultyMapper.selectFacultyByFacultyId(course.getFacultyId());
             Classroom classroom = classroomMapper.selectClassroomByClassroomId(section.getClassroomId());
             one.put("classroom_name", classroom.getClassroomSite()+classroom.getClassroomName());
@@ -66,6 +67,7 @@ public class QueryServiceImpl implements QueryService {
         List<Section> sections = sectionMapper.selectSectionsByTeacherId(teacher_id);
 
         for (Section section : sections) {
+            if (section.getIsCompleted() == 1) continue;
             String[] times = section.getSectionTime().split("/");
             Course course = courseMapper.selectCourseByCourseId(section.getCourseId());
             String name = course.getCourseName();
@@ -98,5 +100,10 @@ public class QueryServiceImpl implements QueryService {
         });
 
         return res;
+    }
+
+    @Override
+    public List<Map<String, Object>> getSectionScore(Integer section_id) {
+        return studentSectionMapper.getSectionScoreBySectionId(section_id);
     }
 }

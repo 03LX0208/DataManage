@@ -10,11 +10,11 @@ import java.util.Map;
 @Mapper
 public interface SectionMapper extends BaseMapper<Section> {
     @Insert("INSERT INTO " +
-    "section(section_id, course_id, teacher_id, classroom_id, section_time, is_completed) " +
-    "VALUES(#{section_id}, #{course_id}, #{teacher_id}, #{classroom_id}, #{section_time}, 0)")
+    "section(section_id, course_id, teacher_id, classroom_id, section_time, capacity, is_completed) " +
+    "VALUES(#{section_id}, #{course_id}, #{teacher_id}, #{classroom_id}, #{section_time}, #{capacity}, 0)")
     void insertSection(@Param("section_id") Integer section_id, @Param("course_id") Integer course_id,
                        @Param("teacher_id") Integer teacher_id, @Param("classroom_id") Integer classroom_id,
-                       @Param("section_time") String section_time);
+                       @Param("section_time") String section_time, @Param("capacity") Integer capacity);
 
     @Select("SELECT * FROM section WHERE section_id = #{section_id}")
     Section selectSectionBySectionId(@Param("section_id") Integer section_id);
@@ -34,6 +34,7 @@ public interface SectionMapper extends BaseMapper<Section> {
             "    course.course_name,\n" +
             "    course.course_period,\n" +
             "    course.course_credit,\n" +
+            "    course.course_id,\n" +
             "    teacher.teacher_name,\n" +
             "    faculty.faculty_name,\n" +
             "    classroom.classroom_name,\n" +
@@ -47,7 +48,6 @@ public interface SectionMapper extends BaseMapper<Section> {
             "ORDER BY section.section_id\n")
     List<Map<String, Object>> getSectionToSelect();
 
-
     @Select("SELECT * FROM section")
     List<Section> getAll();
 
@@ -60,4 +60,7 @@ public interface SectionMapper extends BaseMapper<Section> {
     void updateSectionBySectionId(@Param("section_id") Integer section_id, @Param("course_id") Integer course_id,
                        @Param("teacher_id") Integer teacher_id, @Param("classroom_id") Integer classroom_id,
                        @Param("section_time") String section_time);
+
+    @Update("UPDATE section SET is_completed = 1 WHERE section_id = #{section_id}")
+    void completeSectionBySectionId(@Param("section_id") Integer section_id);
 }

@@ -1,34 +1,50 @@
 <template>
-  <n-data-table
-      :columns="classroomColumns"
-      :data="allClassroom"
-      :pagination="paginationReactive"
-      :bordered="false"
-      :single-line="false"
-      style="font-size: 15px;"
-      striped
-  />
+  <n-card>
+    <n-data-table
+        :columns="classroomColumns"
+        :data="allClassroom"
+        :pagination="paginationReactive"
+        :bordered="false"
+        :single-line="false"
+        style="font-size: 15px;"
+        striped
+    />
+    <template #footer>
+      <n-statistic label="一共有" tabular-nums class="">
+        <n-number-animation  :from="0" :to="classroomCount" />
+        <template #suffix>
+          间教室。
+        </template>
+      </n-statistic>
+    </template>
+  </n-card>
+
 </template>
 
 <script>
-import {NButton, NDataTable, useMessage, NSpace, NPopconfirm} from "naive-ui";
+import {NButton, NDataTable, useMessage, NSpace, NPopconfirm, NStatistic, NNumberAnimation, NCard} from "naive-ui";
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import $ from "jquery";
 
 export default {
   components: {
+    NStatistic,
+    NNumberAnimation,
+    NCard,
     NDataTable,
   },
   setup() {
     const store = useStore();
     const message = useMessage();
     let allClassroom = ref([]);
+    let classroomCount = ref(null);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/classroom/get-all/",
       type: "get",
       success(resp) {
+        classroomCount.value = resp.length;
         allClassroom.value = resp;
       }
     });
@@ -148,6 +164,7 @@ export default {
 
 
     return {
+      classroomCount,
       paginationReactive,
       allClassroom,
       classroomColumns: createClassroomColumns({

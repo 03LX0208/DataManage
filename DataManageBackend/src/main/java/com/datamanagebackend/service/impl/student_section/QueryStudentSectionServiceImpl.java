@@ -17,4 +17,14 @@ public class QueryStudentSectionServiceImpl implements QueryStudentSectionServic
     public List<Map<String, Object>> selectAllSectionByStudentId(Integer student_id) {
         return studentSectionMapper.getStudentSectionByStudentId(student_id);
     }
+
+    @Override
+    public List<Map<String, Object>> getSectionNowCount() {
+        return studentSectionMapper.getSectionNowCountList();
+    }
+
+    @Override
+    public List<Map<String, Object>> getStudentGrade(Integer student_id) {
+        return studentSectionMapper.getStudentGradeByStudentId(student_id);
+    }
 }

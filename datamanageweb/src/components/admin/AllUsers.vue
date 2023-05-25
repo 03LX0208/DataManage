@@ -1,13 +1,23 @@
 <template>
-  <n-data-table
-      striped
-      :columns="usersColumns"
-      :data="allUsers"
-      :pagination="pagination"
-      :bordered="false"
-      :single-line="false"
-      style="font-size: 15px;"
-  />
+  <n-card>
+    <n-data-table
+        striped
+        :columns="usersColumns"
+        :data="allUsers"
+        :pagination="pagination"
+        :bordered="false"
+        :single-line="false"
+        style="font-size: 15px;"
+    />
+    <template #footer>
+      <n-statistic label="一共有" tabular-nums class="">
+        <n-number-animation  :from="0" :to="usersCount" />
+        <template #suffix>
+          位用户。
+        </template>
+      </n-statistic>
+    </template>
+  </n-card>
   <n-modal v-model:show="showAddUserModal">
     <n-card
         style="width: 1000px"
@@ -140,7 +150,7 @@
 </template>
 
 <script>
-import {NButton, NDataTable, NSpace, useMessage, NModal, NCard, NSelect, NInput, NPopconfirm, NDatePicker} from "naive-ui";
+import {NButton, NDataTable, NSpace, useMessage, NModal, NCard, NSelect, NInput, NPopconfirm, NDatePicker, NStatistic, NNumberAnimation} from "naive-ui";
 import {h, reactive, ref} from "vue";
 import {useStore} from "vuex";
 import $ from "jquery";
@@ -155,12 +165,15 @@ export default {
     NSpace,
     NInput,
     NDatePicker,
+    NStatistic,
+    NNumberAnimation,
   },
   setup() {
     const store = useStore();
     const message = useMessage();
     let allUsers = ref([]);
     let allFaculties = ref([]);
+    let usersCount = ref(null);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/faculty/get-all/",
@@ -175,6 +188,7 @@ export default {
             Authorization: "Bearer " + store.state.user.token,
           },
           success(resp) {
+            usersCount.value = resp.length;
             for (const user of resp) {
               let Fac_id = user.faculty_id;
               let Fac = null;
@@ -465,7 +479,9 @@ export default {
       if (userToBeAdd.enter_date > NOW) userToBeAdd.enter_date = NOW;
     }
 
+
     return {
+      usersCount,
       updateDate,
       pagination: paginationReactive,
       facultyOptions,

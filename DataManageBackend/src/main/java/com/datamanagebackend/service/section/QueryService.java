@@ -8,4 +8,5 @@ import java.util.Map;
 public interface QueryService {
     List<Map<String, String>> getCoursesByTeacherId(Integer teacher_id);
     List<Timeline> getTimelineByTeacherId(Integer teacher_id);
+    List<Map<String, Object>> getSectionScore(Integer section_id);
 }

@@ -20,4 +20,14 @@ public class StudentSectionQueryController {
     public List<Map<String, Object>> selectAllSectionByStudentId(@RequestParam Map<String, String> data) {
         return queryService.selectAllSectionByStudentId(Integer.parseInt(data.get("student_id")));
     }
+
+    @GetMapping("/section-now-count/")
+    public List<Map<String, Object>> getSectionNowCount() {
+        return queryService.getSectionNowCount();
+    }
+
+    @GetMapping("/student-score/")
+    public List<Map<String, Object>> getStudentScoreByStudentId(@RequestParam Map<String, String> data) {
+        return queryService.getStudentGrade(Integer.parseInt(data.get("student_id")));
+    }
 }

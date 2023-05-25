@@ -1,9 +1,10 @@
 <template>
   <div class="all">
     <NavBar/>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-12">
+        <div class="col-1"></div>
+        <div class="col-10">
           <n-card title="选课系统">
             <template #header-extra>
               <n-switch size="large" checked-value="true" unchecked-value="false" @update:value="handleSwitch">
@@ -100,7 +101,7 @@ const createChosenSectionColumns = ({
             {default: () => '退课'}
         )
       }
-    }
+    },
   ];
 };
 
@@ -116,7 +117,7 @@ export default {
     const message = useMessage();
 
     const createSectionColumns = ({
-                                    selectSection,
+                                    selectSection, pushToGraph
                                   }) => {
       return [
         {
@@ -140,12 +141,40 @@ export default {
           key: "teacher_name"
         },
         {
+          title: "上课时间",
+          key: "class_time"
+        },
+        {
           title: "学院",
           key: "faculty_name"
         },
         {
+          title: "已选人数",
+          key: "now_capacity"
+        },
+        {
+          title: "课程容量",
+          key: "total_capacity"
+        },
+        {
           title: "教室",
           key: "site"
+        },
+        {
+          title: '先导课程',
+          render(row) {
+            return h(
+                NButton,
+                {
+                  strong: true,
+                  secondary: true,
+                  type: "warning",
+                  size: 'small',
+                  onClick: () => pushToGraph(row)
+                },
+                {default: () => '查看'}
+            )
+          }
         },
         {
           title: '选课',
@@ -166,49 +195,70 @@ export default {
       ];
     };
 
+    let sectionCount = ref([]);
     let allSections = ref([]);
     let chosenSections = ref([]);
+
     $.ajax({
-      url: "https://data.lxcode.xyz/api/student-section/query/all-section-by-student-id/",
+      url: "https://data.lxcode.xyz/api/student-section/query/section-now-count/",
       type: "get",
       headers: {
         Authorization: "Bearer " + store.state.user.token,
       },
-      data: {
-        student_id: store.state.user.username,
-      },
-      success(response) {
-        for (let i in response) {
-          response[i].site = response[i].classroom_site + response[i].classroom_name;
-          const times = response[i].section_time.split("/");
-          let class_time = "";
-          for (let i = 0; i < times.length - 1; i += 2) {
-            class_time += "「" + times[i] + times[i + 1] +  "」 ";
-          }
-          response[i].class_time = class_time;
-        }
-        chosenSections.value = response;
+      success(re) {
+        sectionCount.value = re;
         $.ajax({
-          url: "https://data.lxcode.xyz/api/student-section/get-all-section/",
+          url: "https://data.lxcode.xyz/api/student-section/query/all-section-by-student-id/",
           type: "get",
-          success(resp) {
-            for (let i in resp) {
-              resp[i].site = resp[i].classroom_site + resp[i].classroom_name;
-              const times = resp[i].section_time.split("/");
-              let class_time = "";
-              for (let i = 0; i < times.length - 1; i += 2) {
-                class_time += "「" + times[i] + times[i + 1] +  "」 ";
+          headers: {
+            Authorization: "Bearer " + store.state.user.token,
+          },
+          data: {
+            student_id: store.state.user.username,
+          },
+          success(response) {
+            if (response[0] !== null) {
+              for (let i in response) {
+                response[i].site = response[i].classroom_site + response[i].classroom_name;
+                const times = response[i].section_time.split("/");
+                let class_time = "";
+                for (let i = 0; i < times.length - 1; i += 2) {
+                  class_time += "「" + times[i] + times[i + 1] +  "」 ";
+                }
+                response[i].class_time = class_time;
               }
-              resp[i].class_time = class_time;
-              let ok = true;
-              for (const chosen of response) {
-                if (Number(chosen.section_id) === Number(resp[i].section_id)) {
-                  ok = false;
-                  break;
+            }
+            if (response[0] == null) chosenSections.value = [];
+            $.ajax({
+              url: "https://data.lxcode.xyz/api/student-section/get-all-section/",
+              type: "get",
+              success(resp) {
+                for (let i in resp) {
+                  resp[i].site = resp[i].classroom_site + resp[i].classroom_name;
+                  const times = resp[i].section_time.split("/");
+                  let class_time = "";
+                  for (let i = 0; i < times.length - 1; i += 2) {
+                    class_time += "「" + times[i] + times[i + 1] +  "」 ";
+                  }
+                  resp[i].class_time = class_time;
+                  for (const capa of sectionCount.value) {
+                    if (Number(capa.section_id) === Number(resp[i].section_id)) {
+                      resp[i].now_capacity = capa.now_capacity;
+                      resp[i].total_capacity = capa.total_capacity;
+                      break;
+                    }
+                  }
+                  let ok = true;
+                  for (const chosen of chosenSections.value) {
+                    if (Number(chosen.section_id) === Number(resp[i].section_id)) {
+                      ok = false;
+                      break;
+                    }
+                  }
+                  if (ok) allSections.value.push(resp[i]);
                 }
               }
-              if (ok) allSections.value.push(resp[i]);
-            }
+            });
           }
         });
       }
@@ -267,6 +317,9 @@ export default {
               }
             }
           });
+        },
+        pushToGraph(row) {
+          window.open(`/student/select-course/graph/${row.course_id}`, '_blank');
         }
       }),
       chosenSectionCols: createChosenSectionColumns({

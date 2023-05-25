@@ -16,6 +16,9 @@
              <n-button strong secondary round type="info" size="large" @click="pushToSelect">
                选课系统
              </n-button>
+             <n-button strong secondary round type="primary" size="large" @click="pushToGrade">
+               我的成绩
+             </n-button>
            </n-space>
           </n-card>
         </div>
@@ -32,6 +35,9 @@ import {NCard, NSpace, NButton } from 'naive-ui';
 const pushToSelect = () => {
   window.open("/student/select-course/", '_blank');
 }
+const pushToGrade = () => {
+  window.open("/student/grade/", '_blank');
+}
 
 export default {
   components: {
@@ -43,6 +49,7 @@ export default {
   setup() {
     return {
       pushToSelect,
+      pushToGrade
     }
   }
 }
