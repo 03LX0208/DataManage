@@ -28,6 +28,16 @@ public class AddDeleteServiceImpl implements AddDeleteService {
         Integer student_id = Integer.parseInt(data.get("student_id"));
         Integer section_id = Integer.parseInt(data.get("section_id"));
 
+        List<StudentSection> studentSectionList = studentSectionMapper.selectListByStudentId(student_id);
+        for (StudentSection section : studentSectionList) {
+            if (Objects.equals(section.getSectionId(), section_id)) {
+                res.put("error_message", "您已经选过该课程了!");
+                return res;
+            }
+        }
+
+
+
         Section section = sectionMapper.selectSectionBySectionId(section_id);
         List<StudentSection> list = studentSectionMapper.selectListBySectionId(section_id);
         if (list.size() + 1 > section.getCapacity()) {

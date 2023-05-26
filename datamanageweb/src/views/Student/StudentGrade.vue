@@ -15,6 +15,9 @@
                 :single-line="false"
                 style="font-size: 15px;"
             />
+            <n-modal style="width: 600px; height: 400px; background-color: white" v-model:show="showGradeGraph">
+              <GradeGraph :msg="section_id" />
+            </n-modal>
             <template #footer>
               <n-statistic label="您已经学习了" tabular-nums class="">
                 <n-number-animation  :from="0" :to="gradeCount" />
@@ -34,21 +37,25 @@
 import NavBar from "@/components/NavBar";
 import $ from "jquery";
 import {reactive, ref, h} from "vue";
-import { NDataTable, NCard, NButton, NStatistic, NNumberAnimation} from "naive-ui";
+import { NDataTable, NCard, NButton, NStatistic, NNumberAnimation, NModal} from "naive-ui";
 import {useStore} from "vuex";
-
+import GradeGraph from "@/components/student/GradeGraph";
 
 export default {
   components: {
     NavBar,
     NDataTable,
     NCard,
-    NStatistic, NNumberAnimation
+    NStatistic, NNumberAnimation,
+    NModal,
+    GradeGraph,
   },
   setup() {
     let allGrades = ref([]);
     let gradeCount = ref(null);
+    let section_id = ref(null);
     const store = useStore();
+    let showGradeGraph = ref(false);
 
     $.ajax({
       url: "https://data.lxcode.xyz/api/student-section/query/student-score/",
@@ -66,7 +73,7 @@ export default {
     })
 
     const createGradeColumns = ({
-                                    selectSection,
+                                    showGrade,
                                   }) => {
       return [
         {
@@ -107,7 +114,7 @@ export default {
                   secondary: true,
                   type: "info",
                   size: 'small',
-                  onClick: () => selectSection(row)
+                  onClick: () => showGrade(row)
                 },
                 {default: () => '成绩分布'}
             )
@@ -132,12 +139,18 @@ export default {
     });
 
     return {
+      section_id,
       gradeCount,
       paginationReactive,
       allGrades,
       gradeCols: createGradeColumns({
-
+        showGrade(row) {
+          section_id.value = row.section_id;
+          console.log(section_id.value);
+          showGradeGraph.value = true;
+        }
       }),
+      showGradeGraph,
     }
   }
 }

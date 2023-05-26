@@ -30,4 +30,14 @@ public class StudentSectionQueryController {
     public List<Map<String, Object>> getStudentScoreByStudentId(@RequestParam Map<String, String> data) {
         return queryService.getStudentGrade(Integer.parseInt(data.get("student_id")));
     }
+
+    @GetMapping("/grade-graph/")
+    public List<Integer> getGradeGraph(@RequestParam Map<String, String> data) {
+        return queryService.getGradeGraph(Integer.parseInt(data.get("section_id")));
+    }
+
+    @GetMapping("/time-table/")
+    public List<List<Map<String, String>>> getTimeTable(@RequestParam Map<String, String> data) {
+        return queryService.getTimeTable(Integer.parseInt(data.get("student_id")));
+    }
 }

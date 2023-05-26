@@ -217,8 +217,13 @@ export default {
             student_id: store.state.user.username,
           },
           success(response) {
-            if (response[0] !== null) {
+            if (response.length > 1) {
+              let begin = false
               for (let i in response) {
+                if (!begin) {
+                  begin = true;
+                  continue;
+                }
                 response[i].site = response[i].classroom_site + response[i].classroom_name;
                 const times = response[i].section_time.split("/");
                 let class_time = "";
@@ -226,9 +231,10 @@ export default {
                   class_time += "「" + times[i] + times[i + 1] +  "」 ";
                 }
                 response[i].class_time = class_time;
+                chosenSections.value.push(response[i]);
               }
             }
-            if (response[0] == null) chosenSections.value = [];
+            if (response.length === 1) chosenSections.value = [];
             $.ajax({
               url: "https://data.lxcode.xyz/api/student-section/get-all-section/",
               type: "get",

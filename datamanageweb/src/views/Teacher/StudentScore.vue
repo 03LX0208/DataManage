@@ -6,6 +6,16 @@
         <div class="col-1"></div>
         <div class="col-10">
           <n-card title="学生成绩">
+            <template #header-extra>
+              <n-switch size="large" checked-value="true" unchecked-value="false" @update:value="handleSwitch">
+                <template #checked>
+                  查看成绩分布直方图
+                </template>
+                <template #unchecked>
+                  查看所有学生成绩
+                </template>
+              </n-switch>
+            </template>
             <n-data-table
                 striped
                 :columns="sectionCols"
@@ -14,7 +24,18 @@
                 :bordered="false"
                 :single-line="false"
                 style="font-size: 15px;"
+                v-if="!switchOK"
             />
+
+            <div class="row" v-if="switchOK">
+              <div class="col-4"></div>
+              <div class="col-4">
+                <GradeGraph :msg="id" />
+              </div>
+              <div class="col-4"></div>
+            </div>
+
+
             <n-modal v-model:show="showModal">
               <n-card
                   title="成绩"
@@ -43,9 +64,10 @@
 import NavBar from "@/components/NavBar";
 import $ from "jquery";
 import {h, reactive, ref} from "vue";
-import {NDataTable, NCard, useMessage, NButton, NModal, NInput} from "naive-ui";
+import {NDataTable, NCard, useMessage, NButton, NModal, NInput, NSwitch} from "naive-ui";
 import {useStore} from "vuex";
 import router from "@/router";
+import GradeGraph from "@/components/student/GradeGraph";
 
 
 export default {
@@ -56,13 +78,18 @@ export default {
     NCard,
     NButton,
     NInput,
+    NSwitch,
+    GradeGraph,
   },
   setup() {
     const store = useStore();
     const message = useMessage();
     let allStudents = ref([]);
     let showModal = ref(false);
-    console.log(message);
+    let switchOK = ref(false);
+    const handleSwitch = (value) => {
+      switchOK.value = value === "true";
+    }
 
     const id = router.currentRoute.value.params.id;
     $.ajax({
@@ -169,6 +196,9 @@ export default {
 
 
     return {
+      id,
+      switchOK,
+      handleSwitch,
       grade,
       add,
       showModal,
