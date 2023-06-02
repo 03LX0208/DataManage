@@ -4,5 +4,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface GetAllUsersService {
-    public List<Map<String, String>> getAllUsers();
+    List<Map<String, String>> getAllUsers();
 }

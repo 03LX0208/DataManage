@@ -12,145 +12,7 @@
                 pane-style="padding: 20px;"
             >
               <n-tab-pane name="用户管理">
-                <n-space justify="end">
-                  <n-button class="" round size="large" type="info" @click="showAddUserModalBtn">
-                    添加用户
-                  </n-button>
-                  <n-modal v-model:show="showAddUserModal">
-                    <n-card
-                        style="width: 1000px"
-                        title="添加用户"
-                        :bordered="false"
-                        size="huge"
-                        role="dialog"
-                        aria-modal="true"
-                    >
-                      <template #header-extra>
-                        耐心填写信息~
-                      </template>
-                      <n-space vertical>
-                        身份
-                        <div class="row">
-                          <div class="col-4">
-                            <n-select placeholder="请选择对应身份" v-model:value="userToBeAdd.identity" :options="identityOptions" />
-                          </div>
-                          <div class="col"></div>
-                        </div>
-                        <div v-if="userToBeAdd.identity === 'student'">
-                          <div class="row">
-                            <div class="col-4">
-                              姓名
-                              <n-input placeholder="" v-model:value="userToBeAdd.student_name" maxlength="20" show-count clearable />
-                            </div>
-                            <div class="col-1"></div>
-                            <div class="col-2">
-                              性别
-                              <n-select placeholder="请选择" v-model:value="userToBeAdd.student_gender" :options="genderOptions" />
-                            </div>
-                            <div class="col-2">
-                              年龄
-                              <n-input placeholder="" v-model:value="userToBeAdd.student_age" maxlength="3" show-count clearable />
-                            </div>
-                            <div class="col"></div>
-                          </div>
-                          <div class="row" style="margin-top: 6px;">
-                            <div class="col-4">
-                              教学号
-                              <n-input placeholder="纯数字哦~" v-model:value="userToBeAdd.student_id" maxlength="20" show-count clearable />
-                            </div>
-                            <div class="col-1"></div>
-                            <div class="col-4">
-                              联系方式
-                              <n-input placeholder="纯数字哦~" v-model:value="userToBeAdd.student_telephone" maxlength="20" show-count clearable />
-                            </div>
-                            <div class="col"></div>
-                          </div>
-                          <div style="margin-top: 6px">入学时间</div>
-                          <div class="row">
-                            <div class="col-6">
-                              <n-date-picker v-model:value="userToBeAdd.student_enter_date" @update:value="updateDate" />
-                            </div>
-                          </div>
-                          <div style="margin-top: 6px;">学院</div>
-                          <div class="row">
-                            <div class="col-6">
-                              <n-select placeholder="请选择所属学院~" v-model:value="userToBeAdd.faculty_id" :options="facultyOptions" />
-                            </div>
-                          </div>
-                        </div>
-                        <div v-if="userToBeAdd.identity === 'teacher'">
-                          <div class="row">
-                            <div class="col-4">
-                              姓名
-                              <n-input placeholder="" v-model:value="userToBeAdd.teacher_name" maxlength="20" show-count clearable />
-                            </div>
-                            <div class="col-1"></div>
-                            <div class="col-2">
-                              性别
-                              <n-select placeholder="请选择" v-model:value="userToBeAdd.teacher_gender" :options="genderOptions" />
-                            </div>
-                            <div class="col-2">
-                              年龄
-                              <n-input placeholder="" v-model:value="userToBeAdd.teacher_age" maxlength="3" show-count clearable />
-                            </div>
-                            <div class="col"></div>
-                          </div>
-                          <div class="row" style="margin-top: 6px;">
-                            <div class="col-4">
-                              教学号
-                              <n-input placeholder="纯数字哦~" v-model:value="userToBeAdd.teacher_id" maxlength="20" show-count clearable />
-                            </div>
-                          </div>
-                          <div class="row" style="margin-top: 6px;">
-                            <div class="col-4">
-                              联系方式
-                              <n-input placeholder="纯数字哦~" v-model:value="userToBeAdd.teacher_telephone" maxlength="20" show-count clearable />
-                            </div>
-                          </div>
-                        </div>
-                        <div v-if="userToBeAdd.identity === 'admin'">
-                          <div class="row">
-                            <div class="col-4">
-                              姓名
-                              <n-input placeholder="" v-model:value="userToBeAdd.admin_name" maxlength="20" show-count clearable />
-                            </div>
-                            <div class="col-1"></div>
-                            <div class="col-2">
-                              性别
-                              <n-select placeholder="请选择" v-model:value="userToBeAdd.admin_gender" :options="genderOptions" />
-                            </div>
-                            <div class="col-2">
-                              年龄
-                              <n-input placeholder="" v-model:value="userToBeAdd.admin_age" maxlength="3" show-count clearable />
-                            </div>
-                            <div class="col"></div>
-                          </div>
-                          <div class="row" style="margin-top: 6px;">
-                            <div class="col-4">
-                              教学号
-                              <n-input placeholder="纯数字哦~" v-model:value="userToBeAdd.admin_id" maxlength="20" show-count clearable />
-                            </div>
-                          </div>
-                          <div class="row" style="margin-top: 6px;">
-                            <div class="col-4">
-                              联系方式
-                              <n-input placeholder="纯数字哦~" v-model:value="userToBeAdd.admin_telephone" maxlength="20" show-count clearable />
-                            </div>
-                          </div>
-                        </div>
-                      </n-space>
-                      <template #footer>
-                        <n-space justify="end">
-                          <n-button @click="addUser" strong secondary round type="primary">
-                            确认添加
-                          </n-button>
-                        </n-space>
-                      </template>
-                    </n-card>
-                  </n-modal>
-                </n-space>
-                <n-divider/>
-                <AllUsers/>
+                <AllUsers />
               </n-tab-pane>
               <n-tab-pane name="学院管理">
                 <n-space justify="end">
@@ -328,7 +190,7 @@
 
 <script>
 import NavBar from "@/components/NavBar"
-import {NCard, NTabs, NTabPane, NButton, NSpace, NDivider, NModal, NSelect, NInput, useMessage, NDatePicker } from 'naive-ui';
+import {NCard, NTabs, NTabPane, NButton, NSpace, NDivider, NModal, NSelect, NInput, useMessage } from 'naive-ui';
 import AllUsers from "@/components/admin/AllUsers";
 import AllFaculties from "@/components/admin/AllFaculties";
 import AllCourses from "@/components/admin/AllCourses";
@@ -353,35 +215,12 @@ export default {
     NInput,
     AllFaculties,
     AllCourses,
-    NDatePicker
   },
 
   setup() {
     const store = useStore();
     const message = useMessage();
 
-    // 添加用户
-    let showAddUserModal = ref(false);
-    let userToBeAdd = reactive({
-      student_id: null,
-      student_name: null,
-      identity: null,
-      student_gender: null,
-      student_enter_date: null,
-      student_age: null,
-      student_telephone: null,
-      faculty_id: null,
-      teacher_id: null,
-      teacher_name: null,
-      teacher_gender: null,
-      teacher_age: null,
-      teacher_telephone: null,
-      admin_id: null,
-      admin_name: null,
-      admin_age: null,
-      admin_gender: null,
-      admin_telephone: null,
-    });
     let identityOptions = ref([
       {
         label: "学生",
@@ -420,56 +259,6 @@ export default {
         }
       }
     });
-
-    const addUser = () => {
-      let enter_date = ref("");
-
-      const date = new Date(userToBeAdd.student_enter_date);
-      const year = date.getFullYear();
-      const month = ("0" + (date.getMonth() + 1)).slice(-2);
-      const day = ("0" + date.getDate()).slice(-2);
-      enter_date.value = `${year}-${month}-${day}`;
-
-      $.ajax({
-        url: "https://data.lxcode.xyz/api/admin/user/add/",
-        type: "post",
-        headers: {
-          Authorization: "Bearer " + store.state.user.token,
-        },
-        data: {
-          student_id: userToBeAdd.student_id,
-          student_name: userToBeAdd.student_name,
-          identity: userToBeAdd.identity,
-          student_gender: userToBeAdd.student_gender,
-          student_enter_date: enter_date.value,
-          student_age: userToBeAdd.student_age,
-          student_telephone: userToBeAdd.student_telephone,
-          faculty_id: userToBeAdd.faculty_id,
-          teacher_id: userToBeAdd.teacher_id,
-          teacher_name: userToBeAdd.teacher_name,
-          teacher_gender: userToBeAdd.teacher_gender,
-          teacher_age: userToBeAdd.teacher_age,
-          teacher_telephone: userToBeAdd.teacher_telephone,
-          admin_id: userToBeAdd.admin_id,
-          admin_name: userToBeAdd.admin_name,
-          admin_gender: userToBeAdd.admin_gender,
-          admin_age: userToBeAdd.admin_age,
-          admin_telephone: userToBeAdd.admin_telephone,
-        },
-        success(resp) {
-          if (resp.error_message === "success") {
-            message.success("添加用户成功！");
-            setTimeout(() => { location.reload(); }, 800);
-          } else {
-            message.error(resp.error_message);
-          }
-        }
-      })
-    };
-
-    const showAddUserModalBtn = () => {
-      showAddUserModal.value = true;
-    }
 
     // 添加学院
     let showAddFacultyModal = ref(false);
@@ -598,17 +387,7 @@ export default {
       });
     }
 
-    const updateDate = () => {
-      const nowDate = new Date();
-      const nowYear = nowDate.getFullYear();
-      const nowMonth = nowDate.getMonth();
-      const nowDay = nowDate.getDate();
-      const NOW = new Date(nowYear, nowMonth, nowDay).getTime();
-      if (userToBeAdd.student_enter_date > NOW) userToBeAdd.student_enter_date = NOW;
-    }
-
     return {
-      updateDate,
       classToAdd,
       showAddClassModal,
       showAddClassModalBtn,
@@ -622,12 +401,8 @@ export default {
       facultyToAdd,
       showAddFacultyModal,
       showAddFacultyModalBtn,
-      showAddUserModal,
-      showAddUserModalBtn,
-      userToBeAdd,
       identityOptions,
       genderOptions,
-      addUser,
       facultyOptions,
     }
   }

@@ -5,6 +5,9 @@ import com.datamanagebackend.pojo.Admin;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Mapper
 public interface AdminMapper extends BaseMapper<Admin> {
     @Insert(
@@ -28,3 +31,5 @@ public interface AdminMapper extends BaseMapper<Admin> {
                               @Param("admin_gender") String admin_gender, @Param("admin_age") Integer admin_age,
                               @Param("admin_telephone") String admin_telephone);
 }
+
+

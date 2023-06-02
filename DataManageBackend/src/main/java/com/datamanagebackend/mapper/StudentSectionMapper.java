@@ -54,8 +54,8 @@ public interface StudentSectionMapper extends BaseMapper<StudentSection> {
             "    t.section_id,\n" +
             "    teacher.teacher_name,\n" +
             "    course.course_name,\n" +
-            "    course_credit\n" +
-            "    course_period,\n" +
+            "    course.course_credit,\n" +
+            "    course.course_period,\n" +
             "    faculty_name,\n" +
             "    t.grade\n" +
             "FROM (\n" +
@@ -72,7 +72,7 @@ public interface StudentSectionMapper extends BaseMapper<StudentSection> {
             "LEFT JOIN course ON course.course_id = t.course_id\n" +
             "LEFT JOIN teacher ON teacher.teacher_id = t.teacher_id\n" +
             "LEFT JOIN faculty ON faculty.faculty_id = course.faculty_id\n" +
-            "ORDER BY t.section_id")
+            "ORDER BY t.section_id;  ")
     List<Map<String, Object>> getStudentGradeByStudentId(@Param("student_id") Integer student_id);
 
     @Select("SELECT \n" +

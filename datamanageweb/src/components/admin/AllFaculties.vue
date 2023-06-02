@@ -8,6 +8,7 @@
         :bordered="false"
         :single-line="false"
         style="font-size: 15px;"
+        @update:sorter="handleSorterChange"
     />
     <template #footer>
       <n-statistic label="一共有" tabular-nums class="">
@@ -54,7 +55,10 @@ export default {
       return [
         {
           title: "学院编号",
-          key: "facultyId"
+          key: "facultyId",
+          sorter(rowA, rowB) {
+            return Number(rowA.facultyId) - Number(rowB.facultyId);
+          }
         },
         {
           title: "学院名称",
@@ -71,6 +75,7 @@ export default {
               {
                 text: "删除学院",
                 color: "error",
+                secondary: "true",
                 onClick: () => deleteFaculty(row)
               }
             ];
@@ -111,7 +116,7 @@ export default {
                   h(
                       NSpace,
                       { align: "center" },
-                      buttons.map(({ text, color, onClick }, index) =>
+                      buttons.map(({ text, color, onClick, secondary, }, index) =>
                           h(
                               NPopconfirm,
                               {
@@ -124,6 +129,7 @@ export default {
                                     h(
                                         NButton,
                                         {
+                                          secondary,
                                           strong: true,
                                           type: color,
                                           size: "small",
@@ -169,7 +175,19 @@ export default {
       facultiesColumns: createFacultyColumns({
         deleteFaculty() {
         },
-      })
+      }),
+      handleSorterChange (sorter) {
+        allFaculties.value.forEach((column) => {
+          /** column.sortOrder !== undefined means it is uncontrolled */
+          if (column.sortOrder === undefined) return
+          if (!sorter) {
+            column.sortOrder = false
+            return
+          }
+          if (column.key === sorter.columnKey) column.sortOrder = sorter.order
+          else column.sortOrder = false
+        })
+      }
     }
   }
 }

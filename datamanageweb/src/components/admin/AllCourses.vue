@@ -8,6 +8,7 @@
         :bordered="false"
         :single-line="false"
         style="font-size: 15px;"
+        @update:sorter="handleSorterChange"
     />
     <template #footer>
       <n-statistic label="一共有" tabular-nums class="">
@@ -73,7 +74,10 @@ export default {
       return [
         {
           title: "课程编号",
-          key: "courseId"
+          key: "courseId",
+          sorter(rowA, rowB) {
+            return Number(rowA.courseId) - Number(rowB.courseId);
+          }
         },
         {
           title: "课程名称",
@@ -81,11 +85,17 @@ export default {
         },
         {
           title: "课程学时",
-          key: "coursePeriod"
+          key: "coursePeriod",
+          sorter(rowA, rowB) {
+            return Number(rowA.coursePeriod) - Number(rowB.coursePeriod);
+          }
         },
         {
           title: "课程学分",
-          key: "courseCredit"
+          key: "courseCredit",
+          sorter(rowA, rowB) {
+            return Number(rowA.courseCredit) - Number(rowB.courseCredit);
+          }
         },
         {
           title: "开课学院",
@@ -100,6 +110,7 @@ export default {
                   strong: true,
                   type: "info",
                   size: "small",
+                  secondary: "true",
                   onClick: () => showCourseGraph(row)
                 },
                 { default: () => "查看" }
@@ -113,6 +124,7 @@ export default {
               {
                 text: "删除课程",
                 color: "error",
+                secondary: "true",
                 onClick: () => deleteCourse(row)
               }
             ];
@@ -153,7 +165,7 @@ export default {
                   h(
                       NSpace,
                       { align: "center" },
-                      buttons.map(({ text, color, onClick }, index) =>
+                      buttons.map(({ text, color, onClick, secondary, }, index) =>
                           h(
                               NPopconfirm,
                               {
@@ -166,6 +178,7 @@ export default {
                                     h(
                                         NButton,
                                         {
+                                          secondary,
                                           strong: true,
                                           type: color,
                                           size: "small",
@@ -214,7 +227,19 @@ export default {
         showCourseGraph(row) {
           window.open(`/course/graph/${row.courseId}`, '_blank');
         }
-      })
+      }),
+      handleSorterChange (sorter) {
+        allCourses.value.forEach((column) => {
+          /** column.sortOrder !== undefined means it is uncontrolled */
+          if (column.sortOrder === undefined) return
+          if (!sorter) {
+            column.sortOrder = false
+            return
+          }
+          if (column.key === sorter.columnKey) column.sortOrder = sorter.order
+          else column.sortOrder = false
+        })
+      }
     }
   }
 }

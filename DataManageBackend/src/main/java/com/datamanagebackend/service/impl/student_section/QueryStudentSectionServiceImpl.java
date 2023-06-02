@@ -40,6 +40,7 @@ public class QueryStudentSectionServiceImpl implements QueryStudentSectionServic
 
     @Override
     public List<Map<String, Object>> getStudentGrade(Integer student_id) {
+        System.out.println( studentSectionMapper.getStudentGradeByStudentId(student_id));
         return studentSectionMapper.getStudentGradeByStudentId(student_id);
     }
 

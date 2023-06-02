@@ -22,6 +22,7 @@ public class TestController {
 
     @GetMapping("/api/test/")
     public List<Map<String, Object>> get(@RequestParam Map<String, String> data) {
+        System.out.println(data);
         return sectionMapper.getSectionToSelect();
     }
 }

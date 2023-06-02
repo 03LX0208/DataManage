@@ -217,13 +217,8 @@ export default {
             student_id: store.state.user.username,
           },
           success(response) {
-            if (response.length > 1) {
-              let begin = false
               for (let i in response) {
-                if (!begin) {
-                  begin = true;
-                  continue;
-                }
+                if (response[i] == null) continue;
                 response[i].site = response[i].classroom_site + response[i].classroom_name;
                 const times = response[i].section_time.split("/");
                 let class_time = "";
@@ -233,8 +228,6 @@ export default {
                 response[i].class_time = class_time;
                 chosenSections.value.push(response[i]);
               }
-            }
-            if (response.length === 1) chosenSections.value = [];
             $.ajax({
               url: "https://data.lxcode.xyz/api/student-section/get-all-section/",
               type: "get",

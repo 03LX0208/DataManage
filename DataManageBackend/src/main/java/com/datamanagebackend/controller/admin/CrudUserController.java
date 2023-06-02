@@ -1,4 +1,4 @@
-package com.datamanagebackend.controller.classroom.admin;
+package com.datamanagebackend.controller.admin;
 
 import com.datamanagebackend.service.admin.CrudUserService;
 import org.springframework.beans.factory.annotation.Autowired;

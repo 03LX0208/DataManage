@@ -67,6 +67,7 @@ export default {
         student_id: store.state.user.username,
       },
       success(resp) {
+        console.log(resp);
         allGrades.value = resp;
         gradeCount.value = allGrades.value.length;
       }

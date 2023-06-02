@@ -1,13 +1,10 @@
 <template>
   <nav class="navbar navbar-expand-lg" data-bs-theme="dark" style="background-color: #0066CA; margin: 0; padding: 2px;">
     <div class="container-fluid align-items-center">
-      <router-link :to="{name: 'home'}" class="navbar-brand white-font d-flex" style="margin-left: 40vh; margin-right: 60vh; font-size: 18px; font-family: sans-serif; font-weight: bold;">
+      <router-link :to="{name: 'home'}" class="navbar-brand white-font d-flex" style="margin-left: 40vh; margin-right: 80vh; font-size: 18px; font-family: sans-serif; font-weight: bold;">
         <img src="../assets/images/logo.png" alt="Logo" width="32" height="32" class="d-inline-block" style="margin-right: 10px">
         野鸡大学教务管理系统
       </router-link>
-      <form class="d-flex" role="search" style="height: 30px;" v-if="$store.state.user.is_login">
-        <input class="form-control me-lg-auto" style="background-color: rgb(204,224,244)" type="search" placeholder="请输入关键字" aria-label="Search">
-      </form>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="$store.state.user.is_login">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle white-font" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -15,8 +12,8 @@
             {{ $store.state.user.name }}
           </a>
           <ul class="dropdown-menu">
-            <li><router-link :to="{name: '404'}" class="dropdown-item">个人中心</router-link></li>
-            <li><router-link :to="{name: '404'}" class="dropdown-item">重置选课密码</router-link></li>
+<!--            <li><router-link :to="{name: '404'}" class="dropdown-item">个人中心</router-link></li>-->
+<!--            <li><router-link :to="{name: '404'}" class="dropdown-item">重置选课密码</router-link></li>-->
             <li><hr class="dropdown-divider"></li>
             <li><a @click="logout" class="dropdown-item" href="#">退出</a></li>
           </ul>

@@ -33,8 +33,8 @@
               </div>
               <div class="card-footer py-3 border-0">
                 <div class="text-center">
-                  没有账户？
-                  <router-link :to="{name: 'register'}" class="text-dark">注册</router-link>
+<!--                  没有账户？-->
+<!--                  <router-link :to="{name: 'register'}" class="text-dark">注册</router-link>-->
                 </div>
               </div>
             </div>
