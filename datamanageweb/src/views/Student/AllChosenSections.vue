@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-          <n-card title="选课系统">
+          <n-card title="选课系统" hoverable style="margin-top: 20px">
             <n-data-table
                 striped
                 :columns="sectionCols"

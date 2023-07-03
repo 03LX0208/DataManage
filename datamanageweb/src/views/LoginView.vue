@@ -97,6 +97,6 @@ export default {
 <style scoped>
 .all {
   min-height: 100vh;
-  background-color: lightblue;
+  background-color: rgb(241,241,243);
 }
 </style>

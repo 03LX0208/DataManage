@@ -1,13 +1,13 @@
 <template>
-  <nav class="navbar navbar-expand-lg" data-bs-theme="dark" style="background-color: #0066CA; margin: 0; padding: 2px;">
+  <nav class="navbar navbar-expand-lg" data-bs-theme="dark" style="background-color: #FFFFFF; margin: 0; padding: 2px; box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.15);">
     <div class="container-fluid align-items-center">
-      <router-link :to="{name: 'home'}" class="navbar-brand white-font d-flex" style="margin-left: 40vh; margin-right: 80vh; font-size: 18px; font-family: sans-serif; font-weight: bold;">
+      <router-link :to="{name: 'home'}" class="navbar-brand d-flex" style="margin-left: 40vh; margin-right: 80vh; font-size: 18px; font-family: sans-serif; font-weight: bold;">
         <img src="../assets/images/logo.png" alt="Logo" width="32" height="32" class="d-inline-block" style="margin-right: 10px">
         野鸡大学教务管理系统
       </router-link>
       <ul class="navbar-nav me-auto mb-2 mb-lg-0" v-if="$store.state.user.is_login">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle white-font" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <img src="../assets/images/user.png" alt="Logo" width="26" height="26" style="margin-right: 3px">
             {{ $store.state.user.name }}
           </a>

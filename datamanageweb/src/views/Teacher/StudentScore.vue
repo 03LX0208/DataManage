@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-          <n-card title="学生成绩">
+          <n-card title="学生成绩" hoverable style="margin-top: 20px">
             <template #header-extra>
               <n-switch size="large" checked-value="true" unchecked-value="false" @update:value="handleSwitch">
                 <template #checked>
@@ -24,6 +24,7 @@
                 :bordered="false"
                 :single-line="false"
                 style="font-size: 15px;"
+                @update:sorter="handleSorterChange"
                 v-if="!switchOK"
             />
 
@@ -117,6 +118,9 @@ export default {
         {
           title: "学号",
           key: "student_id",
+          sorter(rowA, rowB) {
+            return Number(rowA.student_id) - Number(rowB.student_id);
+          }
         },
         {
           title: "学院",
@@ -125,6 +129,9 @@ export default {
         {
           title: "成绩",
           key: "grade",
+          sorter(rowA, rowB) {
+            return Number(rowA.grade) - Number(rowB.grade);
+          }
         },
         {
           title: '操作',
@@ -196,6 +203,18 @@ export default {
 
 
     return {
+      handleSorterChange (sorter) {
+        allStudents.value.forEach((column) => {
+          /** column.sortOrder !== undefined means it is uncontrolled */
+          if (column.sortOrder === undefined) return
+          if (!sorter) {
+            column.sortOrder = false
+            return
+          }
+          if (column.key === sorter.columnKey) column.sortOrder = sorter.order
+          else column.sortOrder = false
+        })
+      },
       id,
       switchOK,
       handleSwitch,

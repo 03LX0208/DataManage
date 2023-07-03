@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-          <n-card title="选课系统">
+          <n-card title="选课系统" style="margin-top: 20px" hoverable>
             <template #header-extra>
               <n-switch size="large" checked-value="true" unchecked-value="false" @update:value="handleSwitch">
                 <template #checked>
@@ -25,6 +25,7 @@
                 :bordered="false"
                 :single-line="false"
                 style="font-size: 15px;"
+                @update:sorter="handleSorterChange"
             />
             <n-data-table
                 v-if="switchOK"
@@ -122,7 +123,10 @@ export default {
       return [
         {
           title: "课程编号",
-          key: "section_id"
+          key: "section_id",
+          sorter(rowA, rowB) {
+            return Number(rowA.section_id) - Number(rowB.section_id);
+          }
         },
         {
           title: "课程名称",
@@ -130,11 +134,17 @@ export default {
         },
         {
           title: "学时",
-          key: "course_period"
+          key: "course_period",
+          sorter(rowA, rowB) {
+            return Number(rowA.course_period) - Number(rowB.course_period);
+          }
         },
         {
           title: "学分",
-          key: "course_credit"
+          key: "course_credit",
+          sorter(rowA, rowB) {
+            return Number(rowA.course_credit) - Number(rowB.course_credit);
+          }
         },
         {
           title: "授课老师",
@@ -150,11 +160,17 @@ export default {
         },
         {
           title: "已选人数",
-          key: "now_capacity"
+          key: "now_capacity",
+          sorter(rowA, rowB) {
+            return Number(rowA.now_capacity) - Number(rowB.now_capacity);
+          }
         },
         {
           title: "课程容量",
-          key: "total_capacity"
+          key: "total_capacity",
+          sorter(rowA, rowB) {
+            return Number(rowA.total_capacity) - Number(rowB.total_capacity);
+          }
         },
         {
           title: "教室",
@@ -283,6 +299,18 @@ export default {
     }
 
     return {
+      handleSorterChange (sorter) {
+        allSections.value.forEach((column) => {
+          /** column.sortOrder !== undefined means it is uncontrolled */
+          if (column.sortOrder === undefined) return
+          if (!sorter) {
+            column.sortOrder = false
+            return
+          }
+          if (column.key === sorter.columnKey) column.sortOrder = sorter.order
+          else column.sortOrder = false
+        })
+      },
       chosenSections,
       switchOK,
       handleSwitch,

@@ -4,7 +4,7 @@
     <div class="container" v-if="$store.state.user.identity === 'admin'">
       <div class="row">
         <div class="col-12">
-          <n-card content-style="" style="margin-top: 20px;">
+          <n-card content-style="" style="margin-top: 20px;" hoverable>
             <n-tabs
                 type="line"
                 size="large"

@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-          <n-card title="我的成绩">
+          <n-card title="我的成绩" hoverable style="margin-top: 20px">
             <n-data-table
                 striped
                 :columns="gradeCols"
@@ -14,8 +14,9 @@
                 :bordered="false"
                 :single-line="false"
                 style="font-size: 15px;"
+                @update:sorter="handleSorterChange"
             />
-            <n-modal style="width: 600px; height: 400px; background-color: white" v-model:show="showGradeGraph">
+            <n-modal style="width: 600px; height: 400px; background-color: white; padding: 25px;" v-model:show="showGradeGraph">
               <GradeGraph :msg="section_id" />
             </n-modal>
             <template #footer>
@@ -67,7 +68,6 @@ export default {
         student_id: store.state.user.username,
       },
       success(resp) {
-        console.log(resp);
         allGrades.value = resp;
         gradeCount.value = allGrades.value.length;
       }
@@ -79,7 +79,10 @@ export default {
       return [
         {
           title: "课程编号",
-          key: "section_id"
+          key: "section_id",
+          sorter(rowA, rowB) {
+            return Number(rowA.section_id) - Number(rowB.section_id);
+          }
         },
         {
           title: "课程名称",
@@ -87,11 +90,17 @@ export default {
         },
         {
           title: "学时",
-          key: "course_period"
+          key: "course_period",
+          sorter(rowA, rowB) {
+            return Number(rowA.course_period) - Number(rowB.course_period);
+          }
         },
         {
           title: "学分",
-          key: "course_credit"
+          key: "course_credit",
+          sorter(rowA, rowB) {
+            return Number(rowA.course_credit) - Number(rowB.course_credit);
+          }
         },
         {
           title: "授课老师",
@@ -103,7 +112,10 @@ export default {
         },
         {
           title: "成绩",
-          key: "grade"
+          key: "grade",
+          sorter(rowA, rowB) {
+            return Number(rowA.grade) - Number(rowB.grade);
+          }
         },
         {
           title: '详情',
@@ -140,6 +152,18 @@ export default {
     });
 
     return {
+      handleSorterChange (sorter) {
+        allGrades.value.forEach((column) => {
+          /** column.sortOrder !== undefined means it is uncontrolled */
+          if (column.sortOrder === undefined) return
+          if (!sorter) {
+            column.sortOrder = false
+            return
+          }
+          if (column.key === sorter.columnKey) column.sortOrder = sorter.order
+          else column.sortOrder = false
+        })
+      },
       section_id,
       gradeCount,
       paginationReactive,

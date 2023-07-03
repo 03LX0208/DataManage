@@ -27,7 +27,7 @@
       <div class="row">
         <div class="col"></div>
         <div class="col-9" style="">
-          <n-card title="课程表">
+          <n-card title="课程表" hoverable style="box-shadow: 0 2px 4px rgba(0,0,0,0.15); padding: 5px">
             <table class="table table-bordered">
               <thead>
               <tr style="font-size: 22px;">
